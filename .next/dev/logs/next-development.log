@@ -1,0 +1,12 @@
+{"timestamp":"00:00:01.983","source":"Server","level":"LOG","message":""}
+{"timestamp":"00:00:03.364","source":"Browser","level":"INFO","message":"Download the React DevTools for a better development experience: https://react.dev/link/react-devtools"}
+{"timestamp":"00:00:03.481","source":"Browser","level":"INFO","message":"Download the React DevTools for a better development experience: https://react.dev/link/react-devtools"}
+{"timestamp":"00:00:03.646","source":"Browser","level":"INFO","message":"Download the React DevTools for a better development experience: https://react.dev/link/react-devtools"}
+{"timestamp":"00:00:03.712","source":"Browser","level":"INFO","message":"Download the React DevTools for a better development experience: https://react.dev/link/react-devtools"}
+{"timestamp":"00:00:03.803","source":"Browser","level":"INFO","message":"Download the React DevTools for a better development experience: https://react.dev/link/react-devtools"}
+{"timestamp":"00:00:24.906","source":"Browser","level":"INFO","message":"Download the React DevTools for a better development experience: https://react.dev/link/react-devtools"}
+{"timestamp":"00:00:46.845","source":"Browser","level":"INFO","message":"Download the React DevTools for a better development experience: https://react.dev/link/react-devtools"}
+{"timestamp":"00:00:48.862","source":"Server","level":"ERROR","message":"Digital Twin chat error: SyntaxError: Unexpected end of JSON input"}
+{"timestamp":"00:01:11.546","source":"Browser","level":"INFO","message":"Download the React DevTools for a better development experience: https://react.dev/link/react-devtools"}
+{"timestamp":"00:03:00.625","source":"Server","level":"LOG","message":"✓ Compiled in 23ms"}
+{"timestamp":"00:03:02.485","source":"Server","level":"LOG","message":"✓ Compiled in 13ms"}
