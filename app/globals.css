@@ -18,7 +18,7 @@ body { margin: 0; background: var(--paper); color: var(--ink); font-family: Aria
 a { color: inherit; text-decoration: none; }
 
 .section-shell { width: min(1320px, calc(100% - 80px)); margin: 0 auto; padding-inline: 32px; }
-.section-padding { padding: 130px 0; }
+.section-padding { padding-block: 130px; }
 .site-header { height: 82px; width: min(1320px, calc(100% - 80px)); padding-inline: 32px; margin: auto; display: flex; align-items: center; justify-content: space-between; position: absolute; inset: 0 0 auto; z-index: 5; color: var(--paper); }
 .brand { display: inline-flex; gap: 12px; align-items: center; font-weight: 700; letter-spacing: -.02em; }
 .brand-mark { width: 34px; height: 34px; display: grid; place-items: center; border: 1px solid rgba(241,240,235,.6); font-size: 11px; letter-spacing: -.08em; }
@@ -65,10 +65,10 @@ a { color: inherit; text-decoration: none; }
 .signal-live::before { width: 5px; height: 5px; }
 .hero-index { position: absolute; bottom: 10px; right: 10%; color: var(--acid); font-size: 12px; letter-spacing: .1em; }
 .hero-index span { color: rgba(241,240,235,.36); }
-.scroll-cue { position: absolute; left: 0; bottom: 28px; display: flex; align-items: center; gap: 10px; color: rgba(241,240,235,.54); font-size: 10px; letter-spacing: .13em; text-transform: uppercase; }
+.scroll-cue { position: absolute; left: 32px; bottom: 28px; display: flex; align-items: center; gap: 10px; color: rgba(241,240,235,.54); font-size: 10px; letter-spacing: .13em; text-transform: uppercase; }
 .scroll-cue:hover { color: var(--acid); }
 
-.ticker { height: 63px; background: var(--acid); color: var(--ink); overflow: hidden; display: flex; align-items: center; transform: rotate(-1.2deg) scale(1.02); margin: -8px 0 -18px; position: relative; z-index: 2; }
+.ticker { height: 63px; background: var(--acid); color: var(--ink); overflow: hidden; display: flex; align-items: center; position: relative; z-index: 2; }
 .ticker-track { display: flex; align-items: center; gap: 29px; white-space: nowrap; animation: slide 28s linear infinite; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .11em; }
 .ticker i { font-size: 16px; font-style: normal; }
 @keyframes slide { from { transform: translateX(0); } to { transform: translateX(-25%); } }
@@ -230,7 +230,7 @@ h2 span { color: var(--orange); }
 
 @media (max-width: 950px) {
   .section-shell, .site-header { width: min(100% - 48px, 760px); padding-inline: 24px; }
-  .hero { min-height: 820px; height: auto; padding: 150px 0 105px; display: block; }
+  .hero { min-height: 820px; height: auto; padding-block: 150px 105px; display: block; }
   .hero-copy { width: 100%; }
   .hero h1 { max-width: 700px; }
   .hero-visual { position: relative; right: auto; top: auto; transform: none; width: 100%; height: 455px; margin-top: 35px; }
@@ -238,7 +238,7 @@ h2 span { color: var(--orange); }
   .portrait-initials { font-size: 105px; }
   .signal-card { left: 5%; bottom: 23px; }
   .hero-index { right: 10%; }
-  .scroll-cue { bottom: 25px; }
+  .scroll-cue { left: 24px; bottom: 25px; }
   .about-layout, .journey-intro, .portfolio-top, .capabilities-intro, .contact-layout, .twin-layout { grid-template-columns: 1fr; gap: 34px; }
   .about-body { max-width: 620px; }
   .capability-grid { grid-template-columns: repeat(2, 1fr); }
@@ -265,7 +265,8 @@ h2 span { color: var(--orange); }
   .signal-card { left: 0; bottom: 4px; width: 195px; padding: 13px; box-shadow: 6px 6px 0 var(--orange); }
   .signal-card strong { font-size: 18px; }
   .signal-company { margin-top: 22px; font-size: 8px; }
-  .section-padding { padding: 90px 0; }
+  .section-padding { padding-block: 90px; }
+  .scroll-cue { left: 18px; }
   .section-kicker { margin-bottom: 48px; font-size: 8px; gap: 11px; }
   h2 { font-size: 56px; }
   .about-body .lead { font-size: 22px; }
