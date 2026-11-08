@@ -131,7 +131,11 @@ export default function Home() {
 
       <div className="ticker" aria-label="Areas of focus">
         <div className="ticker-track">
-          <span>Systems thinking</span><i>✳</i><span>Workflow design</span><i>✳</i><span>Technical coordination</span><i>✳</i><span>Web development</span><i>✳</i><span>Systems thinking</span><i>✳</i><span>Workflow design</span><i>✳</i>
+          {[0, 1].map((copy) => (
+            <div className="ticker-group" key={copy} aria-hidden={copy === 1 ? "true" : undefined}>
+              <span>Systems thinking</span><i>✳</i><span>Workflow design</span><i>✳</i><span>Technical coordination</span><i>✳</i><span>Web development</span><i>✳</i>
+            </div>
+          ))}
         </div>
       </div>
 

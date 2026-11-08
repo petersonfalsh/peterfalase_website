@@ -69,9 +69,10 @@ a { color: inherit; text-decoration: none; }
 .scroll-cue:hover { color: var(--acid); }
 
 .ticker { height: 63px; background: var(--acid); color: var(--ink); overflow: hidden; display: flex; align-items: center; position: relative; z-index: 2; }
-.ticker-track { display: flex; align-items: center; gap: 29px; white-space: nowrap; animation: slide 28s linear infinite; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .11em; }
+.ticker-track { display: flex; width: max-content; min-width: 200%; animation: slide 28s linear infinite; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .11em; }
+.ticker-group { display: flex; flex: 1 0 50%; align-items: center; justify-content: space-around; gap: 29px; padding-right: 29px; white-space: nowrap; }
 .ticker i { font-size: 16px; font-style: normal; }
-@keyframes slide { from { transform: translateX(0); } to { transform: translateX(-25%); } }
+@keyframes slide { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
 .section-kicker { display: flex; gap: 18px; align-items: center; color: #7e817d; margin-bottom: 68px; }
 .section-kicker span:first-child { color: var(--orange); }
