@@ -1,5 +1,31 @@
 # Code Review — `my_website`
 
+## Repository and Git hygiene update — 2026-09-27
+
+This section supplements the review below after inspecting the current checkout and the tracked file list. It does not change application code.
+
+### Git findings
+
+1. **High — `.next/` build output is committed and actively changing.** `git ls-files` includes files under `.next/`, and `git status` showed a large number of modified generated development/build files plus an untracked `.next/dev/lock`. This creates noisy commits and can make branches conflict over files that Next.js regenerates. Add `.next/` to `.gitignore`, then remove the directory from Git's index with `git rm -r --cached .next` and commit that cleanup. This leaves the local generated files in place. Do not use ordinary `git rm -r .next` if you want to preserve the local build cache.
+
+2. **Medium — Playwright screenshots are tracked as output artifacts.** `output/playwright/` contains 14 PNG screenshots with names such as `home-desktop.png`, `home-mobile.png`, and `twin-live-final.png`. They are useful as temporary review evidence, but normally do not belong in the source repository. Add `output/playwright/` (or the narrower screenshot output path) to `.gitignore`, then untrack existing screenshots if they are not approved reference assets. Keep a small intentional reference set only when there is a documented need.
+
+3. **Low — `.gitignore` now ignores `node_modules` but remains incomplete.** The current file contains `.env` and `node_modules`. The prior review's statement that it ignored only `.env` is stale. Add `.next/`, `.npm-cache/`, local logs, and the chosen generated screenshot path. Keep `.env` ignored; a future `.env.example` may be committed only if it contains placeholders and no real credentials.
+
+4. **Low — two resume PDFs appear to be maintained.** Both the repository-root PDF and `public/Peter_Falase_Professional_Resume_2026.pdf` are tracked. The existing review reports identical hashes, and the site links to the `public/` path. Keep the public copy for the website; remove the root duplicate from version control only after confirming it is not used as a separate source document.
+
+### Commit guidance
+
+Commit application source (`app/`), project configuration (`package.json`, `package-lock.json`, `next.config.js`, `.gitignore`), maintained repository instructions and documentation (`AGENTS.md`, `CLAUDE.md`, `docs.md`, `review.md`, and `tutorial.md` while current), and intentional public assets. Commit the resume in `public/` only if it is approved for public access. Do not commit real `.env` files/API keys, `node_modules/`, `.next/`, `.npm-cache/`, temporary logs, or incidental screenshots.
+
+### Current working-tree caution
+
+At review time, the branch was `master` tracking `origin/master`, and many tracked `.next/` outputs were modified. These are generated changes from local Next.js activity; they should not be staged as source changes. This documentation task has not staged or reverted them. Review `git status` before committing so unrelated work is preserved.
+
+### Review scope note
+
+The findings F1–F12 below remain the earlier application-code review and were not re-run as part of this documentation update. Their stated build, audit, accessibility, and security verification results describe the earlier review date, not fresh checks on 2026-09-27. In particular, confirm those results again before relying on them for a release.
+
 Date: 2026-08-23  
 Scope: `my_website` only. Application code was not modified.
 
