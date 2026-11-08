@@ -90,7 +90,7 @@ export default function DigitalTwinChat() {
         <div className="twin-intro">
           <p className="twin-status"><span /> ONLINE / GROUNDED IN PROFILE</p>
           <h2>Ask the<br /><span>operator.</span></h2>
-          <p className="twin-description">A conversational layer over Peter&apos;s career story. Get a quick, useful read on his experience, strengths, current work and where he can add value next.</p>
+          <p className="twin-description">Ask this AI assistant about Peter&apos;s experience, strengths and current work to see where he can add value.</p>
           <div className="twin-meta"><div><span>MODEL</span><strong>STEALTH / OX-ALPHA</strong></div><div><span>KNOWLEDGE BASE</span><strong>CAREER PROFILE / 2026</strong></div></div>
         </div>
 

@@ -174,6 +174,7 @@ h2 span { color: var(--orange); }
 .twin-prompts { display: flex; flex-wrap: wrap; gap: 7px; padding: 0 19px 15px; }
 .twin-prompts button { border: 1px solid rgba(11,13,13,.19); background: transparent; color: #5f635d; padding: 8px 10px; font: inherit; font-size: 10px; cursor: pointer; transition: border-color .2s ease, color .2s ease, background .2s ease; }
 .twin-prompts button:hover { color: var(--ink); border-color: var(--acid-ink); background: rgba(173,207,104,.18); }
+.twin-prompts button:focus-visible, .twin-form button:focus-visible, .twin-form textarea:focus-visible { outline: 2px solid #526d26; outline-offset: 3px; }
 .twin-form { display: flex; gap: 9px; margin: 0 19px; padding: 12px 0 11px; border-top: 1px solid rgba(11,13,13,.14); }
 .twin-form textarea { resize: none; min-height: 22px; max-height: 72px; flex: 1; border: 0; outline: 0; background: transparent; color: var(--ink); font: inherit; font-size: 13px; line-height: 1.4; padding: 4px 0; }
 .twin-form textarea::placeholder { color: #969991; }
@@ -287,7 +288,7 @@ h2 span { color: var(--orange); }
   .twin-description { margin: 26px 0 32px; }
   .twin-meta { grid-template-columns: 1fr; gap: 13px; }
   .twin-chat { box-shadow: 7px 7px 0 var(--acid); }
-  .twin-messages { height: 310px; }
+  .twin-messages { height: 200px; }
   .timeline-item { grid-template-columns: 20px 1fr; column-gap: 16px; row-gap: 14px; padding: 24px 0 27px; }
   .timeline-meta { grid-column: 2; grid-row: 1; flex-direction: row; align-items: baseline; gap: 12px; }
   .timeline-marker { grid-column: 1; grid-row: 1 / 3; }
@@ -333,4 +334,5 @@ h2 span { color: var(--orange); }
 .section-kicker, .about-foot, .stat > span, .card-number { color: #5c605c; }
 .twin-chat-header div:nth-child(2) span, .message-label, .twin-note { color: #555a53; }
 .twin-form textarea::placeholder { color: #62675f; }
+.twin-prompts button { font-size: 13px; line-height: 1.4; min-height: 44px; }
 .capability-card p { color: #505450; }
