@@ -288,9 +288,12 @@ h2 span { color: var(--orange); }
   .twin-meta { grid-template-columns: 1fr; gap: 13px; }
   .twin-chat { box-shadow: 7px 7px 0 var(--acid); }
   .twin-messages { height: 310px; }
-  .timeline-item { grid-template-columns: 53px 17px 1fr; gap: 11px; padding: 24px 0 27px; }
-  .timeline-meta { font-size: 9px; }
-  .timeline-meta span:last-child { writing-mode: vertical-rl; transform: rotate(180deg); }
+  .timeline-item { grid-template-columns: 20px 1fr; column-gap: 16px; row-gap: 14px; padding: 24px 0 27px; }
+  .timeline-meta { grid-column: 2; grid-row: 1; flex-direction: row; align-items: baseline; gap: 12px; }
+  .timeline-marker { grid-column: 1; grid-row: 1 / 3; }
+  .timeline-marker::before { top: -24px; height: calc(100% + 51px); }
+  .timeline-item:last-child .timeline-marker::before { height: 28px; }
+  .timeline-content { grid-column: 2; grid-row: 2; }
   .timeline-content h3 { font-size: 22px; }
   .timeline-content .company { line-height: 1.35; }
   .timeline-content > p:last-child { font-size: 13px; }
