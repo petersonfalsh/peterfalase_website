@@ -302,3 +302,24 @@ h2 span { color: var(--orange); }
   .ticker-track { animation: none; }
   *, *::before, *::after { transition-duration: .01ms !important; }
 }
+
+/* Readable supporting text across desktop and mobile. */
+.nav-links, .header-contact, .eyebrow, .section-kicker, .tag,
+.signal-label, .signal-company, .scroll-cue, .ticker-track,
+.about-foot, .stat > span, .timeline-meta, .timeline-number,
+.timeline-content .company, .card-number, .twin-status,
+.twin-meta span, .twin-meta strong, .twin-chat-header div:nth-child(2) span,
+.twin-live, .message-label, .twin-prompts button, .twin-note,
+.visual-label, .project-copy > span, .contact-details, .site-footer,
+.portrait-top, .portrait-bottom, .button { font-size: 12px; }
+.capability-card p, .timeline-content > p:last-child, .project-copy p,
+.twin-message p { font-size: 15px; line-height: 1.55; }
+.twin-form textarea { font-size: 16px; }
+.nav-links, .eyebrow, .hero-intro, .portrait-top, .portrait-bottom,
+.scroll-cue, .section-kicker.light, .journey-intro > p,
+.portfolio-top > p, .timeline-meta, .tag, .timeline-content > p:last-child,
+.twin-description, .twin-meta span, .project-copy p { color: rgba(241,240,235,.78); }
+.section-kicker, .about-foot, .stat > span, .card-number { color: #5c605c; }
+.twin-chat-header div:nth-child(2) span, .message-label, .twin-note { color: #555a53; }
+.twin-form textarea::placeholder { color: #62675f; }
+.capability-card p { color: #505450; }
