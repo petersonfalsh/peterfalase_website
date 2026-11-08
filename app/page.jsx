@@ -98,6 +98,19 @@ export default function Home() {
         <a className="header-contact" href="mailto:pafalase@gmail.com">
           Let&apos;s talk <ArrowUpRight size={15} />
         </a>
+        <details className="mobile-menu">
+          <summary>Menu</summary>
+          <nav aria-label="Mobile navigation" onClick={(event) => {
+            if (event.target.closest("a")) event.currentTarget.parentElement.removeAttribute("open");
+          }}>
+            <a href="#about">About</a>
+            <a href="#journey">Journey</a>
+            <a href="#capabilities">Capabilities</a>
+            <a href="#digital-twin">AI Twin</a>
+            <a href="#portfolio">Portfolio</a>
+            <a href="#contact">Contact</a>
+          </nav>
+        </details>
       </header>
 
       <section className="hero section-shell" id="top">
