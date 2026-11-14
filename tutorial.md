@@ -1,1005 +1,320 @@
-# Peter Falase Portfolio: Beginner Tutorial
+﻿# Peter Falase's Website: A Beginner's Guide
 
-This tutorial explains how the website works, how to run it, and how the Digital Twin chat was added.
+This guide explains what this project is, where its files live, and how the website and AI chat work. You can read it even if you have never built a website. The guide describes the project as it exists today; if the code changes later, update this guide too.
 
-It is written for someone who is new to frontend coding. You do not need to understand every line immediately. The goal is to give you a mental model of the project so you can safely explore it and gradually make changes.
+## 1. What is this project?
 
-## 1. What was built
+This is Peter Falase's **portfolio website**: a website that introduces him, explains his career and skills, and gives people ways to contact him. It also has an AI chat called the **Digital Twin**. A visitor can ask that chat about Peter's professional background.
 
-The project is a professional portfolio website for Peter Falase. It combines:
+Think of the website as a shop:
 
-- A bold, editorial-style portfolio layout.
-- A career summary based on the supplied professional profile.
-- An about section.
-- A career journey timeline.
-- A capabilities section.
-- A future portfolio section for case studies.
-- Contact links for email and phone.
-- A conversational AI Digital Twin that answers questions about Peter's career.
+- The **page** is what visitors see when they walk in.
+- The **styles** decide the colours, spacing and size of things.
+- The **server** is the helper behind the counter that handles requests.
+- The **Digital Twin** is an AI assistant that answers using a written career profile.
+- The **repository**, often called a **repo**, is the project folder and its saved history.
 
-The website is currently available locally at:
+The website has a home section, About, Career Journey, Capabilities, AI Twin, a future Portfolio section and Contact. The portfolio cards currently say “Coming next”; they are placeholders for work to be added later.
 
-```text
-http://localhost:3000
-```
+## 2. A few words to know
 
-The Digital Twin is available on the page under the section titled **Ask the operator**.
+- **Browser:** A program such as Chrome or Edge that displays websites.
+- **Code:** Instructions written for a computer.
+- **File:** A saved piece of information, like a document or code file. A **folder** holds files and other folders.
+- **Terminal:** A place to type commands. The commands in this guide are for **Git Bash**.
+- **Local:** Running on your own computer. Other people cannot automatically see your local website.
+- **Server:** A program that receives a request and sends a response. This project runs a server locally during development.
+- **Component:** A reusable piece of a page, such as the chat box.
+- **API:** A way for programs to communicate. An **endpoint** is a particular address where one program can send a request.
+- **Environment variable:** A named setting given to a program, such as a secret API key.
+- **Git:** A tool that records versions of a project. **GitHub** is a service that can store a copy of those versions online.
+- **Deploy:** Put the website on a hosting service so other people can visit it online.
 
-## 2. Technology summary
+## 3. What tools make the website work?
 
-### Next.js
+- **Node.js** runs JavaScript outside the browser. It runs the development server on your computer.
+- **npm** comes with Node.js and installs the packages the project uses. A package is code made available for a project to use.
+- **Next.js** is the main website framework. It helps build and serve the page and provides the chat endpoint.
+- **React** helps build the page from components and keep track of things that change, such as the text in the chat box.
+- **JavaScript** describes how the website behaves. **JSX** lets the page code describe what to display using tags that look like HTML.
+- **CSS** controls how the site looks: colours, sizes, spacing, screen layouts and animations.
+- **OpenRouter** is the service the server contacts to use an AI model. The requested model is `nvidia/nemotron-3.5-super-vl:free`.
 
-Next.js is the main application framework. It provides:
+You do not have to install each of React and Next.js separately. The project lists its packages in `package.json`, and npm installs them together.
 
-- A way to build pages with React.
-- File-based routing.
-- Server-side code through API routes.
-- Production builds and local development tools.
+## 4. A map of the files and folders
 
-This project uses the Next.js App Router. In this style of Next.js project, files inside the `app` folder define pages and server endpoints.
-
-### React
-
-React is the user-interface library underneath Next.js. The page is made from components. A component is a reusable piece of interface, such as:
-
-- A navigation bar.
-- A timeline item.
-- A chat message.
-- A button or form.
-
-React also manages interactive state. For example, the Digital Twin uses React state to remember:
-
-- The messages currently visible in the conversation.
-- The text currently typed into the input.
-- Whether a response is being loaded.
-
-### JavaScript and JSX
-
-The application uses JavaScript files with JSX syntax:
-
-- `.js` files contain regular JavaScript.
-- `.jsx` files can contain JavaScript plus HTML-like JSX markup.
-
-For example:
-
-```jsx
-const greeting = <p>Hello, Peter.</p>;
-```
-
-JSX is not a separate language. Next.js compiles it into JavaScript that the browser can understand.
-
-### CSS
-
-The visual design is built with regular CSS in:
+The **root** is the main project folder. The important things inside it are shown below. Some folders appear only after you install or run the site. `.env` is private and is not normally included when someone clones the repo.
 
 ```text
-app/globals.css
-```
-
-There is no utility CSS framework in this project. The styles are written directly using class names, CSS variables, responsive media queries, gradients, borders, shadows and animations.
-
-### OpenRouter
-
-OpenRouter provides the AI model request. The website uses the OpenRouter chat completions endpoint and sends the model name:
-
-```text
-stealth/ox-alpha
-```
-
-The browser does not call OpenRouter directly. Instead, it calls the local Next.js API route. The API route reads the secret key from the server environment and then calls OpenRouter.
-
-This separation is important because an API key must not be placed in browser code.
-
-## 3. Project structure
-
-The important files are:
-
-```text
-my_website/
+peterfalase_website/
 ├── app/
-│   ├── api/
-│   │   └── chat/
-│   │       └── route.js
-│   ├── components/
-│   │   └── DigitalTwinChat.jsx
-│   ├── globals.css
-│   ├── layout.js
-│   └── page.jsx
+│   ├── api/chat/route.js         # Server-side chat endpoint
+│   ├── components/DigitalTwinChat.jsx  # Chat box and its behaviour
+│   ├── globals.css               # Visual styles for the site
+│   ├── layout.js                 # Outer page layout and metadata
+│   └── page.jsx                  # Main portfolio page
 ├── public/
 │   └── Peter_Falase_Professional_Resume_2026.pdf
-├── .env
-├── next.config.js
-├── package.json
-├── package-lock.json
-└── tutorial.md
+├── UI/Ux.md                      # UI improvement plan, if present
+├── .env                          # Private settings on your computer
+├── .gitignore                    # Files Git should normally ignore
+├── AGENTS.md                     # Project instructions for AI agents
+├── docs.md                       # Additional project guide
+├── do_not_commit.md              # Git and file-sharing guide, if present
+├── next.config.js                # Next.js settings
+├── package.json                  # Project packages and commands
+├── package-lock.json             # Exact package versions
+├── Peter_Falase_Professional_Resume_2026.pdf  # Root copy of resume
+├── plan.md                       # Project improvement plan
+├── review.md                     # Code review notes
+└── tutorial.md                   # This guide
 ```
 
-### `app/page.jsx`
+### The `app` folder
 
-This is the main portfolio page. It contains:
+`app/page.jsx` builds the main page. It contains the header, hero, scrolling strip, About section, career journey, capabilities, portfolio and contact section. It also places the separate chat component on the page. The `timeline` list near the top contains career roles. The `capabilityCards` list contains the capabilities cards. When a visitor taps a section link, the browser goes to a matching section ID, such as `#journey`.
 
-- The navigation header.
-- The hero section.
-- The ticker strip.
-- The about section.
-- The career timeline.
-- The capabilities cards.
-- The Digital Twin component.
-- The future portfolio cards.
-- The contact section.
+`app/components/DigitalTwinChat.jsx` builds the chat box visitors see. It holds the welcome message and suggested questions, remembers the messages and input while the page is open, sends questions to `/api/chat`, shows answers or errors, and scrolls to the newest message. Enter sends a question; Shift+Enter adds a new line. This file does **not** contain the API key.
 
-### `app/components/DigitalTwinChat.jsx`
+`app/api/chat/route.js` handles the chat request on the server. It chooses the AI model, contains instructions and a written profile based on the resume, reads the private key from the server's environment, and contacts OpenRouter. This is the right place to update the chat's career facts or model selection. Its address in the website is `/api/chat`.
 
-This is the interactive browser-side chat component. It displays messages, handles the form, sends questions to `/api/chat`, and displays the response.
+`app/globals.css` is the site's visual rule book. It controls colours, text sizes, section alignment, cards, the mobile menu, timeline and chat. Rules inside `@media` apply to particular screen sizes or preferences. For example, the smaller-screen rules change the layout for phones. Reduced-motion rules reduce some movement for people who request it.
 
-### `app/api/chat/route.js`
+`app/layout.js` wraps the page in the basic HTML document. It imports the global styles and sets the page title and description that browsers and search engines can use.
 
-This is a server-side API endpoint. It receives chat messages from the browser, adds the Digital Twin instructions, calls OpenRouter, and sends the model response back to the browser.
+### The public files and resume
 
-### `app/globals.css`
+`public/` holds files the website can serve directly to visitors. The “View resume” button opens the PDF inside this folder. Since visitors can open it, check the PDF for information you are comfortable sharing publicly.
 
-This contains the design system and layout rules for the entire site:
+The root folder also contains a copy of the resume. At the last comparison it was identical to the public copy. The website link uses the `public/` copy. If you update a resume, make sure the public copy and the career facts in the chat route are updated as needed; updating the PDF alone does **not** update the AI's written profile.
 
-- Colors.
-- Spacing.
-- Typography.
-- Hero layout.
-- Timeline layout.
-- Cards.
-- Chat panel.
-- Mobile responsive behavior.
+### Settings and package files
 
-### `app/layout.js`
+`package.json` gives the project a name, lists its packages, and defines commands such as `npm run dev` and `npm run build`.
 
-This is the outer application layout. It imports the global stylesheet and defines the browser metadata, such as the page title and description.
+`package-lock.json` records the exact versions in the installed package tree. Keeping it with `package.json` helps others install a consistent set of packages. Do not edit it by hand for ordinary dependency updates.
 
-### `public/`
+`next.config.js` contains Next.js settings for this project, including development settings for localhost. Change it only when you know why the setting is needed.
 
-Files in `public` can be requested directly by URL. The resume is copied there so the resume button can open it at:
+`.env` contains private local settings, including `OPENROUTER_API_KEY`. It belongs on your own machine, not in GitHub. The site reads its value on the server. Do not paste the key into chat, screenshots, documentation or browser code.
+
+`.gitignore` tells Git which untracked files to ignore. This project ignores `.env`, `.env.*`, `node_modules`, `.next`, `.npm-cache/` and `output/playwright/`. Ignore rules do not automatically stop tracking files that Git already tracks. See `do_not_commit.md` for an explanation.
+
+### Project documents
+
+`AGENTS.md` gives instructions to AI coding agents working in the repository. It includes a reminder to consult this installed Next.js version's documentation before changing code.
+
+`docs.md` is another introductory project guide. `plan.md` records a plan for improvements and hardening. `review.md` contains code review findings. These are notes from particular points in time; check the current code before assuming every note still applies.
+
+`UI/Ux.md`, if present, records the UI improvement plan. Its portfolio-content step was deferred until real project details are available. `do_not_commit.md`, if present, explains what to share in Git. Both may exist locally without being committed.
+
+`tutorial.md` is this guide. These `.md` files use **Markdown**, a simple way to write headings, lists and code blocks.
+
+### Folders created on your computer
+
+`node_modules/` is created when npm installs packages. The app needs those packages to run, but the folder can be recreated and should not normally be committed.
+
+`.next/` is created by Next.js while developing or building. It contains generated files and caches. It can be recreated; do not commit it. Stop the development server before removing its generated files.
+
+`.npm-cache/` may contain a local npm cache and logs. `output/playwright/` may contain screenshots from browser checks. These are normally local output, not website source. A screenshot deliberately kept as documentation or a test reference is a separate decision.
+
+`.git/` stores Git's local history and settings. Git manages it; do not edit or delete it casually.
+
+## 5. Set up and run the website on your computer
+
+### Before you start
+
+You need Node.js, npm, Git Bash, a copy of this project and an internet connection to install packages. The chat also needs an OpenRouter API key and internet access. A code editor makes it easier to open the files.
+
+1. Open **Git Bash** in the project root. To check where you are, type:
+
+   ```bash
+   pwd
+   ls -a
+   ```
+
+   You should see files such as `package.json` and the `app` folder. `ls -a` also shows hidden names beginning with a dot.
+
+2. Install the packages using the committed lockfile:
+
+   ```bash
+   npm ci
+   ```
+
+   This creates `node_modules/`. You normally do this after first getting the repo or when dependencies change. The command replaces the installed dependency folder, so do not keep personal files there.
+
+3. Create a file called `.env` in the project root if you do not already have one. Add the line below, replacing the placeholder with your own key. **Do not put the real key in this guide or commit it.**
+
+   ```text
+   OPENROUTER_API_KEY=replace-with-your-own-key
+   ```
+
+   A copy of the repo does not include your private `.env`; each developer sets up their own key. If you change `.env`, restart the development server so it picks up the setting.
+
+4. On this Windows computer, a certificate issue was solved by telling Node to use Windows' trusted certificates. In Git Bash, run:
+
+   ```bash
+   export NODE_OPTIONS="--use-system-ca"
+   npm run dev
+   ```
+
+   This uses the trusted certificates configured in Windows; it does not turn off certificate checking. The setting applies to this terminal session. If Node reports that it does not recognise the option, check your Node version. If a certificate problem persists, investigate the certificate and its issuer rather than disabling security checks.
+
+5. Read the address printed in the terminal, usually `http://localhost:3000`, and open it in a browser. Leave the terminal running while you use the site. To stop the server, return to that terminal and press **Ctrl+C**.
+
+When you save code, the development server normally refreshes the site. It may show an error in the browser or terminal if a change has a mistake.
+
+## 6. How the normal website page appears
+
+1. You open the local address in a browser.
+2. The browser asks the local Next.js server for the home page, `/`.
+3. Next.js uses `app/layout.js` and `app/page.jsx` to prepare the page.
+4. The browser displays the page using the rules in `app/globals.css`.
+5. React handles interactions, such as opening the mobile menu and using the chat.
+
+On a large screen, the header shows navigation links. On a small screen, use the **Menu** button to find the sections. Section links such as `#about` move the page to the matching section. The green strip repeats focus areas across the screen.
+
+## 7. How the Digital Twin answers a question
+
+The chat interface and endpoint have different jobs:
+
+- The **interface** is the chat box visitors see and type into.
+- The **endpoint** is server-side code at `/api/chat` that handles the request behind the scenes.
+
+Here is the trip a question takes:
 
 ```text
-/Peter_Falase_Professional_Resume_2026.pdf
+Visitor types a question in the browser
+    ↓
+DigitalTwinChat.jsx sends the conversation to /api/chat
+    ↓
+route.js checks and limits the messages
+    ↓
+route.js adds instructions and its written career profile
+    ↓
+route.js reads OPENROUTER_API_KEY on the server
+    ↓
+The server sends the request to OpenRouter and the chosen model
+    ↓
+OpenRouter sends an answer back to the server
+    ↓
+The server returns the answer to the chat box
+    ↓
+The visitor sees the answer
 ```
 
-### `.env`
+The route currently accepts user and assistant message roles, trims long messages to 4,000 characters, and keeps up to the last 12 non-empty messages. It uses the model `nvidia/nemotron-3.5-super-vl:free`, asks for at most 500 output tokens, and requests reasoning be disabled. A token is a small piece of text; it is not exactly the same as a word.
 
-This stores environment variables for the local application. The key name used by the chat route is:
+The server holds a **written summary** of the resume in `SYSTEM_PROMPT`. It does not read the PDF for every question. The instructions tell the model to use the profile and say when an answer is missing. AI can still make mistakes or be influenced by questions; these instructions are not a guarantee. Check answers against the resume, and do not claim the chat can know facts that are not provided.
 
-```text
-OPENROUTER_API_KEY=your-private-key
-```
+The key is used by the server to authenticate with OpenRouter and is not deliberately sent to the browser. The messages and the career profile are sent to OpenRouter and its model provider. The chat asks visitors not to share personal or confidential information. The free model may have usage limits, be unavailable, or have provider data-handling terms that should be reviewed before deployment.
 
-The real value should remain private. Never paste the real key into `page.jsx`, `DigitalTwinChat.jsx`, CSS, screenshots, GitHub, or documentation.
+The page's “LIVE” label is a visual label; it does not automatically check whether OpenRouter is available. The endpoint has basic input limits but does not currently provide full public abuse protection or rate limiting.
 
-## 4. How to run the project
+## 8. How to check that the site works
 
-Open PowerShell in the `my_website` directory.
+With the server running, open the local address in your browser:
 
-### Install dependencies
+1. Check the page on a large screen, then make the browser narrow or use a phone-sized view. Open the mobile menu and try its links.
+2. Click “View resume” and check that the PDF opens.
+3. In the AI Twin, ask: “What education does Peter have?” Check the answer against the resume.
+4. Ask something that the resume does not say. The assistant should say the detail is not available rather than make it up. AI answers can vary, so review them carefully.
+5. Try a suggested question, send a message, and see whether the answer appears. If it fails, read the message and look in the server terminal for clues; do not copy secrets into a report.
 
-If dependencies have not been installed yet:
+This is a **manual check**: a person uses the site and observes it. The project does not currently define an automated test command in `package.json`. A successful local check does not prove a future hosted website will work, because the hosted environment has its own settings and network.
 
-```powershell
-npm install
-```
+To check whether the website can be built for production, run:
 
-This reads `package.json` and installs the packages listed there. `package-lock.json` records the exact dependency tree used by npm.
-
-### Start development mode
-
-```powershell
-npm run dev
-```
-
-Then open:
-
-```text
-http://localhost:3000
-```
-
-Development mode watches for file changes and refreshes the browser when you save.
-
-### Build for production
-
-```powershell
+```bash
 npm run build
 ```
 
-This checks whether Next.js can compile and optimize the application.
+This creates generated output in `.next/`. If the build succeeds, you can start that build locally with `npm run start`; stop any other server using the same port first. The `lint` script exists in `package.json`, but do not assume it works without checking it against the installed Next.js version.
 
-### Start the production build
+## 9. How to make common changes
 
-```powershell
-npm run start
+### Change a career role
+
+Open `app/page.jsx`, find `const timeline`, and edit the correct role, company, date or description. Save and check the Career Journey section. If the facts should also change the AI's answers, update the written profile in `app/api/chat/route.js` and the resume as appropriate. These are separate copies; they do not update each other automatically.
+
+### Change a capability or page text
+
+For the capabilities cards, find `const capabilityCards` in `app/page.jsx`. For other text, search that file for the words shown on the page. Edit carefully and check the result on desktop and mobile. The arrows and hover effects on capability and placeholder project cards are currently visual; those cards do not yet link to project pages.
+
+### Change colours or spacing
+
+Open `app/globals.css`. Colour variables such as `--ink` and `--acid` are near the top. Search for the class belonging to the part you want to change, such as `.timeline` or `.twin-chat`. CSS rules can affect more than one screen size, so review the result at different widths.
+
+### Change a suggested chat question
+
+Open `app/components/DigitalTwinChat.jsx` and find the `prompts` list. Edit a question and check that selecting it fills the input. The visitor still sends it using the send button or Enter.
+
+### Update the AI's career knowledge
+
+Open `app/api/chat/route.js` and find `PROFILE FACTS` inside `SYSTEM_PROMPT`. Add only facts Peter is willing to make public and send to the AI provider. Make sure they match the current resume. Do not add a secret, private customer data, or claims you cannot support. Test both a known fact and a question the profile cannot answer.
+
+### Add real portfolio work later
+
+The “Proof is in the build” section currently contains placeholders. Before replacing them, choose real projects, gather what problem each solved, Peter's contribution and the result, and collect any approved images or links. The deferred checklist is in `UI/Ux.md` if that file is available.
+
+## 10. Keep secrets and generated files out of Git
+
+An API key is like a password for a service. Never put it in source code, GitHub, a screenshot or a chat message. `.env` and `.env.*` are ignored here. A safe example file may use dummy values only, and may need an explicit exception in `.gitignore`.
+
+Git has three useful stages:
+
+1. A **working file** is the copy you edit.
+2. The **staging area** holds the changes you choose for the next save in Git.
+3. A **commit** is that saved snapshot. `git push` sends commits to the remote repository.
+
+In Git Bash, inspect before committing:
+
+```bash
+git status --short
+git diff
+git diff --cached
 ```
 
-This serves the build created by `npm run build`.
+`git diff` shows unstaged changes in tracked files. `git diff --cached` shows what is staged. Open untracked files separately to review them: they do not appear in a normal `git diff`. Stage only the files you intend to include:
 
-## 5. High-level walkthrough
-
-The application can be understood as four layers:
-
-```text
-Browser page
-    ↓
-React components and CSS
-    ↓
-Next.js server route
-    ↓
-OpenRouter model
+```bash
+git add tutorial.md
+git diff --cached
+git commit -m "docs: update beginner tutorial"
 ```
 
-For the normal portfolio content:
+The commit includes **all staged changes**, not just the file most recently added. Check the whole staged diff first. If you have staged changes for another task, decide whether to commit them separately. `git push` later sends commits, not uncommitted files. See `do_not_commit.md` for more examples, including how to stop tracking generated files that were committed earlier.
 
-1. The browser requests `/`.
-2. Next.js renders `app/page.jsx`.
-3. `app/globals.css` provides the layout and styling.
-4. The browser displays the completed portfolio page.
+## 11. Troubleshooting
 
-For the Digital Twin:
+**The website address does not open.** Check that `npm run dev` is still running and use the exact address it printed. If the port is busy, check whether another server is already running.
 
-1. A visitor types a question into the chat box.
-2. React stores the text in component state.
-3. The browser sends the conversation to `/api/chat`.
-4. The Next.js route reads `OPENROUTER_API_KEY` from `.env`.
-5. The route adds the career profile instructions.
-6. The route sends the request to OpenRouter using `stealth/ox-alpha`.
-7. OpenRouter returns a response.
-8. The route sends only the response text back to the browser.
-9. React adds the response to the chat window.
+**The chat says the key is not configured.** Check that `.env` is in the project root and contains the correctly named `OPENROUTER_API_KEY`. Do not print or share its value. Restart the server after changing it.
 
-The key is never sent to the browser.
+**The chat is temporarily unavailable.** Check the terminal for a useful error, your connection, the configured key and provider availability or limits. The public message intentionally avoids exposing detailed provider errors. A free model can be unavailable or rate limited.
 
-## 6. Reviewing the main page
+**A certificate error appears on this Windows computer.** Node may not trust a certificate used by the connection. The `--use-system-ca` setting in section 5 worked for a local endpoint check here. A certificate error can have different causes; find out why a certificate is present and trusted. Never solve this by turning off certificate validation.
 
-### The page starts as a client component
+**The chat gives a wrong answer.** Compare the written profile in `route.js` with the resume and check the question. AI can still make mistakes even with instructions. Correct outdated facts and test again.
 
-At the top of `app/page.jsx`:
+**A Git status list shows generated files.** The project ignores `.next/`, but ignore rules alone do not remove files already tracked by Git. Follow the repository cleanup instructions in `do_not_commit.md`; review staged changes before committing.
 
-```jsx
-"use client";
+## 12. When you are ready to deploy
 
-import DigitalTwinChat from "./components/DigitalTwinChat";
-```
+Deployment is putting the site on a hosting service so people can visit it. It is a later task; running locally does not publish it.
 
-`"use client"` tells Next.js that this page can use browser-side React behavior. The import brings the Digital Twin component into the page.
+Before making it public, review the site and resume, add abuse and rate-limit protections appropriate for a public chat, check the provider's current privacy and free-model terms, and configure the real `OPENROUTER_API_KEY` in the hosting service's secret environment settings. Do not upload `.env` or put the key in browser code. Deployments may have different Node versions, network and certificate settings, and provider limits. After deploying, test the chat and other links on the live address as well.
 
-The Digital Twin itself also has `"use client"`, because it uses state and browser event handlers.
+## 13. A small glossary
 
-### Reusable SVG icons
-
-The page defines small icon components instead of adding an icon package:
-
-```jsx
-const ArrowUpRight = ({ size = 18 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
-    <path
-      d="M5 19 19 5M8 5h11v11"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-);
-```
-
-Important ideas:
-
-- `const ArrowUpRight = ...` creates a reusable component.
-- `{ size = 18 }` provides a default size.
-- `currentColor` makes the SVG use the CSS text color of its parent.
-- `aria-hidden="true"` tells assistive technology that this icon is decorative because nearby text explains the action.
-
-### Data-driven career timeline
-
-The career entries are kept in an array:
-
-```jsx
-const timeline = [
-  {
-    year: "2024 — now",
-    role: "IT & Digital Operations Lead",
-    company: "Monoliza Sport & Recreational Center",
-    tag: "OPERATIONS / SYSTEMS",
-    body: "Keeping workplace technology dependable while turning booking, membership, invoicing and tournament administration into clearer, repeatable digital workflows.",
-  },
-  // More entries follow...
-];
-```
-
-Then the page loops through the array:
-
-```jsx
-{timeline.map((item, index) => (
-  <article
-    className={`timeline-item ${index === 0 ? "current" : ""}`}
-    key={`${item.year}-${item.company}`}
-  >
-    <div className="timeline-meta">
-      <span className="timeline-number">0{index + 1}</span>
-      <span>{item.year}</span>
-    </div>
-
-    <div className="timeline-content">
-      <div className="tag">{item.tag}</div>
-      <h3>{item.role}</h3>
-      <p className="company">{item.company}</p>
-      <p>{item.body}</p>
-    </div>
-  </article>
-))}
-```
-
-This is better than writing five separate blocks by hand because changing a role only requires changing the data object. The layout remains consistent automatically.
-
-### Navigation and page anchors
-
-The navigation uses anchor links:
-
-```jsx
-<a href="#about">About</a>
-<a href="#journey">Journey</a>
-<a href="#digital-twin">AI Twin</a>
-<a href="#portfolio">Portfolio</a>
-```
-
-Each target section has a matching `id`:
-
-```jsx
-<section className="digital-twin section-shell section-padding" id="digital-twin">
-```
-
-When a visitor clicks `AI Twin`, the browser scrolls to the element with `id="digital-twin"`.
-
-The smooth scrolling effect is set in CSS:
-
-```css
-html {
-  scroll-behavior: smooth;
-}
-```
-
-### Adding the Digital Twin to the page
-
-The page imports and renders the component like this:
-
-```jsx
-import DigitalTwinChat from "./components/DigitalTwinChat";
-
-// ...other sections...
-
-<DigitalTwinChat />
-
-// ...portfolio and contact sections...
-```
-
-This keeps the chat code separate from the long portfolio page. A separate component is easier to test and maintain.
-
-## 7. Reviewing the Digital Twin component
-
-### Initial conversation state
-
-The chat begins with a welcome message:
-
-```jsx
-const initialMessages = [
-  {
-    id: "welcome",
-    role: "assistant",
-    content: "Hi — I’m Peter’s Digital Twin. Ask me about his career journey, systems work, current roles or technical background.",
-  },
-];
-```
-
-Each message has:
-
-- An `id`, which React uses as a stable key.
-- A `role`, either `user` or `assistant`.
-- The visible `content`.
-
-### React state
-
-Inside the component:
-
-```jsx
-const [messages, setMessages] = useState(initialMessages);
-const [input, setInput] = useState("");
-const [isLoading, setIsLoading] = useState(false);
-```
-
-This creates three pieces of state:
-
-1. `messages` stores the conversation.
-2. `input` stores the current textarea value.
-3. `isLoading` prevents duplicate requests and shows that the model is working.
-
-When state changes, React re-renders the affected interface.
-
-### Controlled textarea
-
-The input field is controlled by React:
-
-```jsx
-<textarea
-  value={input}
-  onChange={(event) => setInput(event.target.value)}
-  placeholder="Ask about Peter's career..."
-  rows="1"
-  aria-label="Ask the Digital Twin a question"
-  disabled={isLoading}
-/>
-```
-
-The important relationship is:
-
-```text
-User types → onChange runs → setInput updates state → textarea reflects state
-```
-
-The button is disabled when there is no question or when a request is already in progress:
-
-```jsx
-<button
-  type="submit"
-  disabled={!input.trim() || isLoading}
->
-  <SendIcon />
-</button>
-```
-
-### Submitting a question
-
-The form handler first creates a user message:
-
-```jsx
-const content = input.trim();
-if (!content || isLoading) return;
-
-const userMessage = {
-  id: `${Date.now()}-user`,
-  role: "user",
-  content,
-};
-
-const nextMessages = [...messages, userMessage];
-setMessages(nextMessages);
-setInput("");
-setIsLoading(true);
-```
-
-The spread operator creates a new array containing the previous messages and the new message. React state should be updated with new values rather than mutating the old array directly.
-
-### Calling the local API route
-
-The browser calls the local endpoint:
-
-```jsx
-const response = await fetch("/api/chat", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({
-    messages: nextMessages.map(({ role, content: text }) => ({
-      role,
-      content: text,
-    })),
-  }),
-});
-```
-
-This is a normal HTTP `POST` request. The body contains the conversation in JSON format.
-
-The browser does not include the API key. It only sends the messages to the local Next.js route.
-
-### Handling success and failure
-
-On success, the returned response is added to the message list:
-
-```jsx
-const payload = await response.json();
-
-if (!response.ok) {
-  throw new Error(payload?.error || "Unable to reach the Digital Twin.");
-}
-
-setMessages((current) => [
-  ...current,
-  {
-    id: `${Date.now()}-assistant`,
-    role: "assistant",
-    content: payload.message,
-  },
-]);
-```
-
-The `catch` block adds a friendly error message instead of leaving the visitor wondering what happened:
-
-```jsx
-catch (error) {
-  setMessages((current) => [
-    ...current,
-    {
-      id: `${Date.now()}-error`,
-      role: "assistant",
-      content: error.message || "I could not reach the Digital Twin just now. Please try again.",
-      isError: true,
-    },
-  ]);
-}
-```
-
-Finally, `finally` resets the loading state whether the request succeeded or failed:
-
-```jsx
-finally {
-  setIsLoading(false);
-}
-```
-
-### Scrolling the chat window
-
-The component uses a `ref` to scroll the message panel to the newest message:
-
-```jsx
-const messagesRef = useRef(null);
-
-useEffect(() => {
-  if (messagesRef.current) {
-    messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
-  }
-}, [messages, isLoading]);
-```
-
-Whenever `messages` or `isLoading` changes, the effect runs and moves the scroll position to the bottom.
-
-### Rendering safe formatting
-
-The model may return simple Markdown-style bold text, such as:
-
-```text
-**IT operations**
-```
-
-The component converts bold markers into React `<strong>` elements instead of rendering raw asterisks:
-
-```jsx
-const renderMessageContent = (content) => content
-  .split(/(\*\*[^*]+\*\*)/g)
-  .map((part, index) => (
-    part.startsWith("**") && part.endsWith("**")
-      ? <strong key={`${part}-${index}`}>{part.slice(2, -2)}</strong>
-      : <span key={`${part}-${index}`}>{part}</span>
-  ));
-```
-
-This is deliberately small and limited. It is not a full Markdown renderer.
-
-## 8. Reviewing the server API route
-
-The API route is located at:
-
-```text
-app/api/chat/route.js
-```
-
-In the App Router, a `route.js` file can export functions such as `POST`. The function name matches the HTTP method.
-
-### Model configuration
-
-The model is kept in a constant:
-
-```js
-const MODEL = "stealth/ox-alpha";
-```
-
-This makes the model easy to find and change later.
-
-### The Digital Twin system prompt
-
-The system prompt explains the role of the AI and supplies the career context:
-
-```js
-const SYSTEM_PROMPT = `You are Peter Falase's Digital Twin: a grounded, polished career assistant built from his professional profile.
-
-Use only the profile facts below. Do not invent employers, dates, job titles, projects, awards, metrics, links or personal details.
-
-PROFILE FACTS:
-- Name: Peter Falase. Based in Abuja, Nigeria.
-- Positioning: IT and digital operations professional focused on systems, automation and technical project coordination.
-- Current roles: IT & Digital Operations Lead at Monoliza Sport & Recreational Center; IT & Project Coordination Officer at Threemplus Integrated Enterprises Ltd.
-// More grounded profile facts follow...
-`;
-```
-
-The prompt performs two jobs:
-
-1. It tells the model how to behave.
-2. It gives the model the facts it should use to answer questions.
-
-The instruction not to invent facts is especially important for a career assistant. If the profile does not contain a detail, the assistant should say so instead of guessing.
-
-### Reading the environment variable
-
-The route reads the API key on the server:
-
-```js
-const apiKey = process.env.OPENROUTER_API_KEY;
-
-if (!apiKey) {
-  return NextResponse.json(
-    { error: "OPENROUTER_API_KEY is not configured." },
-    { status: 500 }
-  );
-}
-```
-
-`process.env` is Node.js and Next.js's interface for environment variables.
-
-The key is intentionally not prefixed with `NEXT_PUBLIC_`. Variables with `NEXT_PUBLIC_` are designed to be exposed to browser code. This key must remain server-only.
-
-### Validating and limiting messages
-
-The route only accepts user and assistant messages:
-
-```js
-const cleanMessages = messages
-  .filter(
-    (message) =>
-      ["user", "assistant"].includes(message?.role) &&
-      typeof message?.content === "string"
-  )
-  .map((message) => ({
-    role: message.role,
-    content: message.content.trim().slice(0, 4000),
-  }))
-  .filter((message) => message.content.length > 0)
-  .slice(-12);
-```
-
-This provides basic protection against:
-
-- Unsupported message roles.
-- Empty messages.
-- Extremely long individual messages.
-- An unlimited conversation growing forever.
-
-The route also checks that at least one user message exists:
-
-```js
-if (!cleanMessages.some((message) => message.role === "user")) {
-  return NextResponse.json(
-    { error: "Please ask a question about Peter's career." },
-    { status: 400 }
-  );
-}
-```
-
-### Calling OpenRouter
-
-The actual provider request is made here:
-
-```js
-const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-  method: "POST",
-  headers: {
-    Authorization: `Bearer ${apiKey}`,
-    "Content-Type": "application/json",
-    "HTTP-Referer": "http://localhost:3000",
-    "X-Title": "Peter Falase Digital Twin",
-  },
-  body: JSON.stringify({
-    model: MODEL,
-    messages: [
-      { role: "system", content: SYSTEM_PROMPT },
-      ...cleanMessages,
-    ],
-    temperature: 0.45,
-    max_tokens: 500,
-  }),
-  cache: "no-store",
-});
-```
-
-Important pieces:
-
-- `Authorization` sends the secret key as a bearer token.
-- `model` selects `stealth/ox-alpha`.
-- The system prompt is sent before the conversation.
-- `temperature` controls how varied the answer may be. A lower value helps keep career answers focused.
-- `max_tokens` limits the length of the generated response.
-- `cache: "no-store"` avoids caching a personalized chat request.
-
-### Reading the response
-
-OpenRouter returns a chat completion object. The answer is extracted from the first choice:
-
-```js
-const payload = await response.json();
-
-if (!response.ok) {
-  const providerMessage =
-    payload?.error?.message ||
-    "OpenRouter could not complete the request.";
-
-  return NextResponse.json(
-    { error: providerMessage },
-    { status: response.status }
-  );
-}
-
-const message = payload?.choices?.[0]?.message?.content?.trim();
-
-return NextResponse.json({ message, model: MODEL });
-```
-
-The browser receives only the response text and the model label. It never receives the API key.
-
-## 9. Reviewing the layout and styling
-
-### Design tokens
-
-The stylesheet begins with CSS variables:
-
-```css
-:root {
-  --ink: #0b0d0d;
-  --paper: #f1f0eb;
-  --acid: #adcf68;
-  --acid-ink: #849c46;
-  --lavender: #b9adff;
-  --orange: #ff7257;
-}
-```
-
-This is a small design system. Instead of repeating the same color everywhere, the styles refer to variables:
-
-```css
-.button-primary {
-  background: var(--acid);
-  color: var(--ink);
-}
-```
-
-If you want to change the overall green accent, you can update `--acid` in one place.
-
-### Section shell
-
-Most sections use the `section-shell` class:
-
-```css
-.section-shell {
-  width: min(1320px, calc(100% - 80px));
-  margin: 0 auto;
-  padding-inline: 32px;
-}
-```
-
-This means:
-
-- The section can grow up to 1320 pixels.
-- It keeps space around itself on smaller screens.
-- `margin: 0 auto` centers it.
-- Horizontal padding protects text from touching the edges.
-
-That last detail fixed the text clipping issue on the dark sections.
-
-### Responsive layout
-
-Responsive CSS changes the layout at different screen widths:
-
-```css
-@media (max-width: 950px) {
-  .about-layout,
-  .journey-intro,
-  .portfolio-top,
-  .capabilities-intro,
-  .contact-layout,
-  .twin-layout {
-    grid-template-columns: 1fr;
-    gap: 34px;
-  }
-}
-```
-
-On large screens, the twin introduction and chat panel sit side-by-side. Below 950 pixels, they stack vertically.
-
-At a smaller mobile width, the chat panel becomes narrower and the message area gets slightly shorter:
-
-```css
-@media (max-width: 620px) {
-  .twin-chat {
-    box-shadow: 7px 7px 0 var(--acid);
-  }
-
-  .twin-messages {
-    height: 310px;
-  }
-}
-```
-
-### The chat panel styles
-
-The chat panel is intentionally a lighter surface against the dark section:
-
-```css
-.twin-chat {
-  width: 100%;
-  max-width: 620px;
-  justify-self: end;
-  background: #e8e9e2;
-  color: var(--ink);
-  border: 1px solid rgba(241, 240, 235, 0.4);
-  box-shadow: 12px 12px 0 var(--acid);
-}
-```
-
-The acid-colored shadow ties the chat panel back to the rest of the portfolio without making the chat text itself too bright.
-
-## 10. How to customize the website
-
-### Change your introduction
-
-Open `app/page.jsx` and search for:
-
-```jsx
-Technology-focused operator and builder helping teams move from scattered processes to systems that work — reliably, visibly and with a little more intent.
-```
-
-Replace the text while keeping the surrounding `<p>` element.
-
-### Add a career entry
-
-Find the `timeline` array in `app/page.jsx` and add another object:
-
-```jsx
-{
-  year: "2026 — now",
-  role: "Your new title",
-  company: "Your new company",
-  tag: "NEW AREA",
-  body: "A short, factual summary of the work.",
-},
-```
-
-Do not forget the comma after the previous object.
-
-### Change the accent colors
-
-Edit the variables in `app/globals.css`:
-
-```css
-:root {
-  --acid: #adcf68;
-  --acid-ink: #849c46;
-  --orange: #ff7257;
-  --lavender: #b9adff;
-}
-```
-
-The `--acid-ink` color is darker so it remains readable on the light paper sections.
-
-### Change the Digital Twin's knowledge
-
-Open:
-
-```text
-app/api/chat/route.js
-```
-
-Edit the `PROFILE FACTS` section inside `SYSTEM_PROMPT`.
-
-Keep this information factual. If you add a new role, update the actual profile content and then update the prompt. Avoid adding confidential information that should not be sent to an AI provider.
-
-### Change suggested questions
-
-Open `app/components/DigitalTwinChat.jsx` and edit:
-
-```jsx
-const prompts = [
-  "What does Peter do best?",
-  "Tell me about his current roles.",
-  "What kind of role is he open to?",
-];
-```
-
-These buttons place a question in the chat input. The visitor can edit it before sending.
-
-## 11. A safe beginner workflow for making changes
-
-Use this cycle:
-
-1. Make one small change.
-2. Save the file.
-3. Refresh the browser.
-4. Check both desktop and mobile widths.
-5. Check the browser console if something looks broken.
-6. Run `npm run build` before considering the change finished.
-
-For content changes, start with `app/page.jsx`.
-
-For layout and colors, use `app/globals.css`.
-
-For chat UI behavior, use `app/components/DigitalTwinChat.jsx`.
-
-For the model, grounding instructions and API request, use `app/api/chat/route.js`.
-
-## 12. Common beginner mistakes
-
-### Putting the API key in a client file
-
-Do not do this:
-
-```jsx
-const apiKey = "sk-or-v1-your-key";
-```
-
-Anything in client-side code can be sent to a visitor's browser and inspected. Keep the key in `.env` and only read it in `app/api/chat/route.js`.
-
-### Using the wrong environment variable name
-
-The route expects:
-
-```text
-OPENROUTER_API_KEY
-```
-
-If the name changes in `.env`, it must also change in `route.js`.
-
-### Forgetting to restart after changing `.env`
-
-Environment variables are usually loaded when Next.js starts. If you change the key, stop the server and run it again.
-
-### Forgetting the `id` for an anchor target
-
-This link:
-
-```jsx
-<a href="#digital-twin">AI Twin</a>
-```
-
-only works if the page includes:
-
-```jsx
-<section id="digital-twin">
-```
-
-### Mutating React state directly
-
-Avoid:
-
-```jsx
-messages.push(newMessage);
-setMessages(messages);
-```
-
-Prefer:
-
-```jsx
-setMessages((current) => [...current, newMessage]);
-```
-
-The second version creates a new array, which makes it easier for React to detect the update.
-
-## 13. What was tested
-
-The finished project was checked in several ways:
-
-- The Next.js production build completed successfully.
-- The homepage returned HTTP 200 locally.
-- The Digital Twin API returned HTTP 200 for a real career question.
-- The response came from the configured `stealth/ox-alpha` model.
-- A real browser test filled the chat input, clicked Send, waited for the provider response and displayed the answer.
-- The Digital Twin layout was checked at desktop and mobile widths.
-- The resume file remained available through the public URL.
-
-## 14. Five self-review suggestions
-
-1. **Add rate limiting and abuse protection.** The current route validates messages and limits their size, but it does not limit how many requests one visitor can send. A production version should add rate limiting, bot protection or an authenticated usage layer.
-
-2. **Use a real Markdown renderer with sanitization.** The current chat supports a small subset of bold formatting. A carefully configured Markdown renderer could support headings and lists more reliably, as long as the output is sanitized before rendering.
-
-3. **Move career facts into a dedicated data file.** The profile facts currently live inside the long system prompt. Moving them into a structured file would make it easier to update the website copy and the AI knowledge together, while reducing duplication.
-
-4. **Add automated tests for the API route and chat component.** The current behavior was manually tested in a real browser. Automated tests could verify invalid requests, missing API keys, provider errors, loading states and successful responses on every future change.
-
-5. **Add streaming responses and stronger observability.** The current chat waits for the complete model response before displaying it. Streaming would make the chat feel faster, while structured server logs and provider request IDs would make production troubleshooting easier.
+- **`localhost`:** Your own computer when it acts as a server.
+- **`npm ci`:** Installs the project's locked dependency versions for a clean setup.
+- **`npm run dev`:** Starts the local development server.
+- **`npm run build`:** Produces a build intended for production.
+- **`npm run start`:** Starts the built application locally.
+- **Prompt:** Instructions or a question sent to an AI model.
+- **Grounding:** Supplying information for the AI to use. It helps but does not guarantee correctness.
+- **API key:** A secret used to identify and authorise access to a service.
+- **Staged:** Selected for the next Git commit. `--cached` in `git diff --cached` refers to this staging area.
+- **Tracked:** A file Git knows about. An ignored file is normally left out when it is untracked.
