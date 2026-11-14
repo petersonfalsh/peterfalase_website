@@ -91,7 +91,7 @@ export default function DigitalTwinChat() {
           <p className="twin-status"><span /> ONLINE / GROUNDED IN PROFILE</p>
           <h2>Ask the<br /><span>operator.</span></h2>
           <p className="twin-description">Ask this AI assistant about Peter&apos;s experience, strengths and current work to see where he can add value.</p>
-          <div className="twin-meta"><div><span>MODEL</span><strong>STEALTH / OX-ALPHA</strong></div><div><span>KNOWLEDGE BASE</span><strong>CAREER PROFILE / 2026</strong></div></div>
+          <div className="twin-meta"><div><span>MODEL</span><strong>NVIDIA / NEMOTRON</strong></div><div><span>KNOWLEDGE BASE</span><strong>RESUME / 2026</strong></div></div>
         </div>
 
         <div className="twin-chat" aria-label="Chat with Peter Falase's Digital Twin">
@@ -102,7 +102,7 @@ export default function DigitalTwinChat() {
           </div>
           <div className="twin-prompts">{prompts.map((prompt) => <button type="button" key={prompt} onClick={() => setInput(prompt)}>{prompt}</button>)}</div>
           <form className="twin-form" onSubmit={submitMessage}><textarea value={input} onChange={(event) => setInput(event.target.value)} onKeyDown={handleKeyDown} placeholder="Ask about Peter&apos;s career..." rows="1" aria-label="Ask the Digital Twin a question" disabled={isLoading} /><button type="submit" aria-label="Send question" disabled={!input.trim() || isLoading}><SendIcon /></button></form>
-          <p className="twin-note">AI-generated responses are grounded in Peter&apos;s supplied career profile.</p>
+          <p className="twin-note">AI responses use Peter&apos;s resume. Messages are sent to OpenRouter and its model provider; please avoid sharing personal or confidential information.</p>
         </div>
       </div>
     </section>
