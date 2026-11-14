@@ -286,7 +286,106 @@ git commit -m "docs: update beginner tutorial"
 
 The commit includes **all staged changes**, not just the file most recently added. Check the whole staged diff first. If you have staged changes for another task, decide whether to commit them separately. `git push` later sends commits, not uncommitted files. See `do_not_commit.md` for more examples, including how to stop tracking generated files that were committed earlier.
 
-## 11. Troubleshooting
+## 11. Understanding Git file states
+
+Imagine Git as a photo album for your project. Your **working folder** is where you edit files. The **staging area**, also called the **index**, is a tray where you choose what to include in the next photo. A **commit** is the saved photo. Git saves the staged version of a file, so if you edit it again after staging, the newer edit is not included until you stage it too.
+
+| Word | What it means |
+| --- | --- |
+| **Untracked** | Git sees a new file but has not been asked to include it yet. For example, a new `notes.md` starts untracked unless it is ignored. |
+| **Tracked** | Git knows about the file because it was added to the staging area or is part of a previous commit. A tracked file can be unchanged, modified, staged or deleted. |
+| **Modified** | A tracked file has changed compared with the version Git is comparing it with. The change can be staged or unstaged. |
+| **Unstaged** | The current change in your working folder has not been selected for the next commit. It stays on your computer when you commit other staged changes. |
+| **Staged** | A particular version of a file or deletion has been selected for the next commit. If you edit that file again, it can have both staged and unstaged changes at once. |
+| **Committed** | The staged changes have been saved in a commit in your local Git history. |
+| **Ignored** | An ignore rule tells Git to normally leave a matching untracked file out of the list and out of ordinary `git add` commands. Ignoring does not make an already tracked file untracked. |
+| **Deleted** | A tracked file has been removed from the working folder, or its removal from tracking has been staged. `git status` tells you which. |
+| **Pushed** | Commits have been sent to a remote repository, such as GitHub. Uncommitted work is not sent by `git push`. |
+
+For example, if you create `notes.md`, it starts untracked. Run `git add notes.md` and its current contents become staged. Run `git commit -m "docs: add notes"` and Git saves those staged contents in a local commit. Edit the file again and it becomes modified with an unstaged change. The file remains tracked throughout.
+
+### How to see the states
+
+In Git Bash, run:
+
+```bash
+git status
+```
+
+Git groups files under headings such as **Changes to be committed** (staged), **Changes not staged for commit** (unstaged changes to tracked files), and **Untracked files**. An untracked file can be opened in your editor for review before you add it.
+
+For a shorter view:
+
+```bash
+git status --short
+```
+
+The first two positions on each line show the staged and unstaged state. For example, `M  tutorial.md` means a modification is staged; ` M tutorial.md` means a modification is unstaged; `MM tutorial.md` means both exist; `A  notes.md` means a new file is staged; and `?? notes.md` means it is untracked. `D` means a deletion. The space in each example matters.
+
+### How to move changes between states
+
+```bash
+git diff                          # Review unstaged changes to tracked files
+git add tutorial.md               # Stage the file's current contents
+git diff --cached                 # Review all staged changes
+git restore --staged -- tutorial.md  # Unstage it; keep its working file
+git commit -m "docs: update tutorial" # Commit all staged changes locally
+git push                          # Send local commits to the configured remote
+```
+
+`--cached` in `git diff --cached` means “compare the staging area with the last commit.” It does not mean a web cache. In `git rm --cached`, it tells Git to stage removal from tracking while keeping the local file. That removal affects future commits and checkouts after it is committed.
+
+Be careful with `git restore -- tutorial.md`: unlike `git restore --staged`, it discards unstaged edits to the working file. It may not be possible to recover edits that were never saved in Git. Review `git status` and `git diff` before using it.
+
+## 12. Writing clear commit messages
+
+A commit is a saved snapshot of the changes you staged. Its message tells your future self and other people what changed. Some teams use a pattern called **Conventional Commits**. Git does not require this pattern, but it makes the history easier to scan and can help release tools understand changes.
+
+The usual shape is:
+
+```text
+type: short description
+```
+
+For example, `feat: add mobile navigation` means the commit adds a feature. The word before the colon is the **type**; the words after it describe the change. Use a meaningful description rather than just `chore` or `fix` on its own.
+
+These are commonly used types. Only `feat` and `fix` have special meaning in the Conventional Commits specification; the others are useful conventions that a team may choose to use. There is no single complete list required by Git.
+
+| Type | When to use it | Example |
+| --- | --- | --- |
+| `feat` | Add a feature people can use. | `feat: add mobile navigation` |
+| `fix` | Correct something that is broken or behaves incorrectly. | `fix: show an error when chat fails` |
+| `docs` | Change documentation or explanations. Use `docs`, not `doc`, if following this common spelling. | `docs: update beginner tutorial` |
+| `style` | Change formatting or visual presentation without changing the intended behaviour. | `style: improve timeline spacing` |
+| `refactor` | Reorganise existing code without intentionally changing what it does. | `refactor: simplify chat message handling` |
+| `perf` | Make something faster or use fewer resources. | `perf: reduce image loading time` |
+| `test` | Add or update tests that check the software. | `test: add chat response checks` |
+| `build` | Change how the project is built or its dependencies. | `build: update website dependencies` |
+| `ci` | Change automatic checks or workflows that run on a service such as GitHub Actions. CI means continuous integration. | `ci: run checks on pull requests` |
+| `chore` | Do routine project housekeeping that does not fit a more specific type. | `chore: stop tracking generated files` |
+| `revert` | Undo an earlier change. | `revert: remove mobile navigation change` |
+
+Teams may also use other labels such as `security` or `config`; agree on the meaning within the project. Use the clearest type for the main purpose of the commit. For example, a CSS change that fixes a broken mobile menu could use `fix`, even though it changes styles. A dependency update might use `build` or `chore`, depending on the team's convention.
+
+You can add a **scope** in parentheses to say which part changed:
+
+```text
+fix(chat): handle an unavailable AI provider
+docs(tutorial): explain commit messages
+```
+
+A **breaking change** is a change that requires people using the software to change something for it to keep working. If a team uses Conventional Commits, it can mark one with `!`, for example `feat(api)!: change the response format`, and explain the details in the commit body. Do not add `!` for an ordinary change.
+
+In Git Bash, after staging and reviewing the right files, create the commit like this:
+
+```bash
+git diff --cached
+git commit -m "docs: explain commit message types"
+```
+
+The quotation marks keep the message together as one piece of text. The commit includes **all** staged changes, so always review them first. For a larger change, `git commit` without `-m` opens your Git-configured editor, where you can add a short title, a blank line and a longer explanation. Save and close the editor to finish the commit.
+
+## 13. Troubleshooting
 
 **The website address does not open.** Check that `npm run dev` is still running and use the exact address it printed. If the port is busy, check whether another server is already running.
 
@@ -300,13 +399,13 @@ The commit includes **all staged changes**, not just the file most recently adde
 
 **A Git status list shows generated files.** The project ignores `.next/`, but ignore rules alone do not remove files already tracked by Git. Follow the repository cleanup instructions in `do_not_commit.md`; review staged changes before committing.
 
-## 12. When you are ready to deploy
+## 14. When you are ready to deploy
 
 Deployment is putting the site on a hosting service so people can visit it. It is a later task; running locally does not publish it.
 
 Before making it public, review the site and resume, add abuse and rate-limit protections appropriate for a public chat, check the provider's current privacy and free-model terms, and configure the real `OPENROUTER_API_KEY` in the hosting service's secret environment settings. Do not upload `.env` or put the key in browser code. Deployments may have different Node versions, network and certificate settings, and provider limits. After deploying, test the chat and other links on the live address as well.
 
-## 13. A small glossary
+## 15. A small glossary
 
 - **`localhost`:** Your own computer when it acts as a server.
 - **`npm ci`:** Installs the project's locked dependency versions for a clean setup.
