@@ -187,9 +187,9 @@ Here is the trip a question takes:
 ```text
 Visitor types a question in the browser
     ↓
-DigitalTwinChat.jsx sends the conversation to /api/chat
+DigitalTwinChat.jsx sends the new question and a session ID to /api/chat
     ↓
-route.js checks and limits the messages
+route.js checks the question and reads earlier messages from the local server's memory
     ↓
 route.js adds instructions and its written career profile
     ↓
@@ -204,7 +204,7 @@ The server returns the answer to the chat box
 The visitor sees the answer
 ```
 
-The route currently accepts user and assistant message roles, trims long messages to 4,000 characters, and keeps up to the last 12 non-empty messages. It uses the model `nvidia/nemotron-3.5-super-vl:free`, asks for at most 500 output tokens, and requests reasoning be disabled. A token is a small piece of text; it is not exactly the same as a word.
+The route accepts one new question of up to 4,000 characters and keeps up to 12 earlier messages on the local server. It rejects requests larger than 256 KB. A random session ID connects a browser to its conversation; keep that ID private because someone with it could continue the conversation. Local sessions expire after 30 minutes of inactivity or when the server restarts. The development server allows 10 requests per minute in total, and the chat is disabled outside development until shared production protections are configured. It uses `nvidia/nemotron-3.5-super-vl:free`, asks for at most 500 output tokens, and requests reasoning be disabled. A token is a small piece of text; it is not exactly the same as a word.
 
 The server holds a **written summary** of the resume in `SYSTEM_PROMPT`. It does not read the PDF for every question. The instructions tell the model to use the profile and say when an answer is missing. AI can still make mistakes or be influenced by questions; these instructions are not a guarantee. Check answers against the resume, and do not claim the chat can know facts that are not provided.
 

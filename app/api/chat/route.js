@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { checkLocalRateLimit } from "./rate-limit";
-import { ChatRequestError, readChatMessages } from "./request-validation";
+import { ChatRequestError, readChatMessage } from "./request-validation";
+import { beginConversation, cancelConversation, finishConversation } from "./conversation-store";
 
 const MODEL = "nvidia/nemotron-3.5-super-vl:free";
 
@@ -26,13 +27,14 @@ PROFILE FACTS:
 - Portfolio: A portfolio of systems, interfaces and operational improvements is in progress; do not claim specific published case studies.`;
 
 export async function POST(request) {
+  let reservation;
   try {
     const apiKey = process.env.OPENROUTER_API_KEY;
     if (!apiKey) {
       return NextResponse.json({ error: "OPENROUTER_API_KEY is not configured." }, { status: 500 });
     }
 
-    const cleanMessages = await readChatMessages(request);
+    const { message: userMessage, sessionId } = await readChatMessage(request);
 
     // A process-local counter cannot protect a deployed, multi-instance service.
     if (process.env.NODE_ENV !== "development") {
@@ -48,6 +50,8 @@ export async function POST(request) {
       );
     }
 
+    reservation = beginConversation(sessionId);
+
     const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -58,7 +62,7 @@ export async function POST(request) {
       },
       body: JSON.stringify({
         model: MODEL,
-        messages: [{ role: "system", content: SYSTEM_PROMPT }, ...cleanMessages],
+        messages: [{ role: "system", content: SYSTEM_PROMPT }, ...reservation.session.messages, { role: "user", content: userMessage }],
         temperature: 0.45,
         max_tokens: 500,
         reasoning: { enabled: false },
@@ -77,12 +81,17 @@ export async function POST(request) {
       return NextResponse.json({ error: "The Digital Twin returned an empty response." }, { status: 502 });
     }
 
-    return NextResponse.json({ message, model: MODEL });
+    finishConversation(reservation, userMessage, message);
+    const activeSessionId = reservation.id;
+    reservation = null;
+    return NextResponse.json({ message, model: MODEL, sessionId: activeSessionId });
   } catch (error) {
     if (error instanceof ChatRequestError) {
       return NextResponse.json({ error: error.message }, { status: error.status });
     }
     console.error("Digital Twin chat error:", error);
     return NextResponse.json({ error: "The Digital Twin is temporarily unavailable. Please try again." }, { status: 500 });
+  } finally {
+    if (reservation) cancelConversation(reservation);
   }
 }

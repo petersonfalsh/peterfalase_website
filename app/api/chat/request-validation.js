@@ -1,5 +1,4 @@
 const MAX_BODY_BYTES = 256 * 1024;
-const MAX_MESSAGES = 12;
 const MAX_MESSAGE_CHARS = 4000;
 
 export class ChatRequestError extends Error {
@@ -9,7 +8,7 @@ export class ChatRequestError extends Error {
   }
 }
 
-export async function readChatMessages(request) {
+export async function readChatMessage(request) {
   const reader = request.body?.getReader();
   if (!reader) throw new ChatRequestError("Please provide a chat request.", 400);
 
@@ -42,24 +41,18 @@ export async function readChatMessages(request) {
     throw new ChatRequestError("Please send valid JSON.", 400);
   }
 
-  if (!body || !Array.isArray(body.messages) || body.messages.length === 0 || body.messages.length > MAX_MESSAGES) {
-    throw new ChatRequestError("Please send between 1 and 12 chat messages.", 400);
+  if (!body || typeof body !== "object" || Array.isArray(body) || Object.keys(body).some((key) => !["message", "sessionId"].includes(key))) {
+    throw new ChatRequestError("Please send a question and an optional session ID.", 400);
   }
-
-  const messages = body.messages.map((message) => {
-    if (!message || !["user", "assistant"].includes(message.role) || typeof message.content !== "string") {
-      throw new ChatRequestError("Each chat message must have a valid role and text.", 400);
-    }
-    const content = message.content.trim();
-    if (!content) throw new ChatRequestError("Chat messages cannot be empty.", 400);
-    if (content.length > MAX_MESSAGE_CHARS) {
-      throw new ChatRequestError("Each chat message must be 4,000 characters or fewer.", 400);
-    }
-    return { role: message.role, content };
-  });
-
-  if (!messages.some((message) => message.role === "user")) {
+  if (typeof body.message !== "string" || !body.message.trim()) {
     throw new ChatRequestError("Please ask a question about Peter's career.", 400);
   }
-  return messages;
+  const message = body.message.trim();
+  if (message.length > MAX_MESSAGE_CHARS) {
+    throw new ChatRequestError("Each chat message must be 4,000 characters or fewer.", 400);
+  }
+  if (body.sessionId != null && (typeof body.sessionId !== "string" || !/^[a-f0-9]{64}$/.test(body.sessionId))) {
+    throw new ChatRequestError("The chat session is invalid. Refresh the page to start again.", 400);
+  }
+  return { message, sessionId: body.sessionId ?? null };
 }

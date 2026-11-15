@@ -34,6 +34,7 @@ export default function DigitalTwinChat() {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const messagesRef = useRef(null);
+  const sessionIdRef = useRef(null);
 
   useEffect(() => {
     if (messagesRef.current) {
@@ -56,10 +57,11 @@ export default function DigitalTwinChat() {
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: nextMessages.slice(-12).map(({ role, content: text }) => ({ role, content: text })) }),
+        body: JSON.stringify({ message: content, sessionId: sessionIdRef.current }),
       });
       const payload = await response.json();
       if (!response.ok) throw new Error(payload?.error || "Unable to reach the Digital Twin.");
+      sessionIdRef.current = payload.sessionId;
       setMessages((current) => [...current, { id: `${Date.now()}-assistant`, role: "assistant", content: payload.message }]);
     } catch (error) {
       setMessages((current) => [

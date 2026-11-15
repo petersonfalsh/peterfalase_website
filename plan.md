@@ -49,6 +49,8 @@ Some protections depend on the hosting service. We can prepare and check the loc
 
 ### Step 3 — Protect the chat's career context (C3)
 
+**Progress:** Local development stores recent conversation history in server memory using random session IDs; the browser sends only its new question. Sessions expire after 30 minutes of inactivity or on server restart. A shared, protected production store and adversarial evaluation remain before deployment; AI answers can still be wrong.
+
 **Where:** The chat endpoint and conversation handling.
 
 **What and why:** Stop treating earlier messages supplied by the browser as automatically trustworthy. Decide how the server can recognise or safely handle conversation history and keep answers tied to Peter's reviewed career facts.
