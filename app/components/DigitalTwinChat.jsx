@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { MAX_CHAT_MESSAGE_LENGTH } from "../chat-limits";
 
 const initialMessages = [
   {
@@ -37,6 +38,7 @@ export default function DigitalTwinChat() {
   const messagesRef = useRef(null);
   const sessionIdRef = useRef(null);
   const submittingRef = useRef(false);
+  const isTooLong = input.length > MAX_CHAT_MESSAGE_LENGTH;
 
   useEffect(() => {
     if (messagesRef.current) {
@@ -47,7 +49,7 @@ export default function DigitalTwinChat() {
   const submitMessage = async (event) => {
     event.preventDefault();
     const content = input.trim();
-    if (!content || submittingRef.current) return;
+    if (!content || isTooLong || submittingRef.current) return;
 
     submittingRef.current = true;
     const userMessage = { id: `${Date.now()}-user`, role: "user", content };
@@ -102,7 +104,8 @@ export default function DigitalTwinChat() {
           </div>
           {errorMessage && <p className="twin-error" role="alert">{errorMessage} Your question is back in the box so you can retry or edit it.</p>}
           <div className="twin-prompts">{prompts.map((prompt) => <button type="button" key={prompt} disabled={isLoading} onClick={() => setInput(prompt)}>{prompt}</button>)}</div>
-          <form className="twin-form" onSubmit={submitMessage}><textarea value={input} onChange={(event) => setInput(event.target.value)} onKeyDown={handleKeyDown} placeholder="Ask about Peter&apos;s career..." rows="1" aria-label="Ask the Digital Twin a question" disabled={isLoading} /><button type="submit" aria-label="Send question" disabled={!input.trim() || isLoading}><SendIcon /></button></form>
+          <form className="twin-form" onSubmit={submitMessage}><textarea value={input} onChange={(event) => setInput(event.target.value)} onKeyDown={handleKeyDown} placeholder="Ask about Peter&apos;s career..." rows="1" aria-label="Ask the Digital Twin a question" aria-describedby="twin-character-limit" aria-invalid={isTooLong} disabled={isLoading} /><button type="submit" aria-label="Send question" disabled={!input.trim() || isLoading || isTooLong}><SendIcon /></button></form>
+          <p className={`twin-character-limit${isTooLong ? " over-limit" : ""}`} id="twin-character-limit">{input.length.toLocaleString("en-US")} / {MAX_CHAT_MESSAGE_LENGTH.toLocaleString("en-US")} characters{isTooLong ? " — Please shorten your question." : ""}</p>
           <p className="twin-note">AI responses use Peter&apos;s resume. Messages are sent to OpenRouter and its model provider; please avoid sharing personal or confidential information.</p>
         </div>
       </div>

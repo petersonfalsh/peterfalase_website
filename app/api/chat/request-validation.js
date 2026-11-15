@@ -1,5 +1,6 @@
+import { MAX_CHAT_MESSAGE_LENGTH } from "../../chat-limits.js";
+
 const MAX_BODY_BYTES = 256 * 1024;
-const MAX_MESSAGE_CHARS = 4000;
 
 export class ChatRequestError extends Error {
   constructor(message, status) {
@@ -47,10 +48,10 @@ export async function readChatMessage(request) {
   if (typeof body.message !== "string" || !body.message.trim()) {
     throw new ChatRequestError("Please ask a question about Peter's career.", 400);
   }
-  const message = body.message.trim();
-  if (message.length > MAX_MESSAGE_CHARS) {
+  if (body.message.length > MAX_CHAT_MESSAGE_LENGTH) {
     throw new ChatRequestError("Each chat message must be 4,000 characters or fewer.", 400);
   }
+  const message = body.message.trim();
   if (body.sessionId != null && (typeof body.sessionId !== "string" || !/^[a-f0-9]{64}$/.test(body.sessionId))) {
     throw new ChatRequestError("The chat session is invalid. Refresh the page to start again.", 400);
   }

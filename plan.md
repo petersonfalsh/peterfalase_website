@@ -103,6 +103,8 @@ Some protections depend on the hosting service. We can prepare and check the loc
 
 ### Step 6 — Make question length limits clear (C6)
 
+**Progress:** The chat displays the 4,000-character limit, prevents sending longer text, and the server checks the same limit without silently truncating. Browser verification remains to be done.
+
 **Where:** The chat input and server validation.
 
 **What and why:** Tell visitors the maximum question length and reject questions that are too long instead of silently cutting them off. Keep the server limit even if the browser also enforces it.

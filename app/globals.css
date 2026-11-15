@@ -185,6 +185,8 @@ h2 span { color: var(--orange); }
 .twin-form button:hover:not(:disabled) { background: var(--acid-ink); color: var(--paper); transform: translateY(-2px); }
 .twin-form button:disabled { opacity: .32; cursor: not-allowed; }
 .twin-note { margin: 0; padding: 0 19px 14px; color: #979b93; font-size: 9px; letter-spacing: .02em; }
+.twin-character-limit { margin: 0; padding: 0 19px 10px; color: #555a53; font-size: 12px; line-height: 1.4; }
+.twin-character-limit.over-limit { color: #96382c; font-weight: 700; }
 
 .portfolio-top { margin-bottom: 66px; }
 .project-grid { display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 13px; }
