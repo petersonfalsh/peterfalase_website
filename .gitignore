@@ -4,3 +4,5 @@ node_modules
 .next
 .npm-cache/
 output/playwright/
+test-results/
+playwright-report/

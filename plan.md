@@ -121,6 +121,10 @@ Some protections depend on the hosting service. We can prepare and check the loc
 
 ### Step 7 — Restore quality checks (C7)
 
+**Progress:** Configured ESLint, added server checks with simulated provider responses, and added browser checks with a mocked chat. Lint, four server checks and two browser checks passed locally. See the tutorial for setup and commands.
+
+**Dependency audit, 15 November 2026:** npm reported 10 vulnerabilities overall, including 3 in production dependencies (1 critical, 2 high). Review the advisories and choose a supported upgrade before deployment; the audit severity alone does not establish whether a particular project route is exploitable. Do not apply automatic upgrades without reviewing their effects.
+
 **Where:** `package.json` and project checking tools.
 
 **What and why:** Replace the outdated lint command and establish useful repeatable checks. Linting looks for common code problems; automated checks help catch changes that accidentally break existing behaviour.
@@ -129,10 +133,10 @@ Some protections depend on the hosting service. We can prepare and check the loc
 
 **Tasks:**
 
-- [ ] Configure a lint command supported by the installed project versions.
-- [ ] Add focused checks for validation, limits, provider failures and chat recovery, using a mock provider where appropriate.
-- [ ] Add a small browser check for important navigation and chat behaviour.
-- [ ] Document the commands and run the checks appropriate to the work.
+- [x] Configure a lint command supported by the installed project versions.
+- [x] Add focused checks for validation, limits, provider failures and chat recovery, using a mock provider where appropriate.
+- [x] Add a small browser check for important navigation and chat behaviour.
+- [x] Document the commands and run the checks appropriate to the work.
 
 **Suggested commit:** `chore: restore project quality checks`
 

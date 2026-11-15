@@ -222,7 +222,18 @@ With the server running, open the local address in your browser:
 4. Ask something that the resume does not say. The assistant should say the detail is not available rather than make it up. AI answers can vary, so review them carefully.
 5. Try a suggested question, send a message, and see whether the answer appears. If it fails, read the message and look in the server terminal for clues; do not copy secrets into a report.
 
-This is a **manual check**: a person uses the site and observes it. The project does not currently define an automated test command in `package.json`. A successful local check does not prove a future hosted website will work, because the hosted environment has its own settings and network.
+This is a **manual check**: a person uses the site and observes it. A successful local check does not prove a future hosted website will work, because the hosted environment has its own settings and network.
+
+The project also has repeatable checks. From the project folder in Git Bash:
+
+```bash
+npm run lint
+npm test
+npx playwright install chromium
+npm run test:browser
+```
+
+`lint` looks for common code problems. `npm test` checks server-side validation, conversation handling and provider responses with simulated data. The browser checks open the site in Chromium, check mobile navigation and simulate a failed chat followed by a retry. They do not call OpenRouter or use your API key. Install the Chromium browser for Playwright once before running the browser checks. The browser checks use the development server on port 3000, starting one if needed; if a different project is running on that port, stop it first. The checks are useful, but do not replace checking the real chat and layout yourself.
 
 To check whether the website can be built for production, run:
 
@@ -230,7 +241,7 @@ To check whether the website can be built for production, run:
 npm run build
 ```
 
-This creates generated output in `.next/`. If the build succeeds, you can start that build locally with `npm run start`; stop any other server using the same port first. The `lint` script exists in `package.json`, but do not assume it works without checking it against the installed Next.js version.
+This creates generated output in `.next/`. If the build succeeds, you can start that build locally with `npm run start`; stop any other server using the same port first. The AI chat is disabled outside development until production protections are configured.
 
 ## 9. How to make common changes
 
