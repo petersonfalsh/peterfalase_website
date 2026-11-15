@@ -33,8 +33,10 @@ export default function DigitalTwinChat() {
   const [messages, setMessages] = useState(initialMessages);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const messagesRef = useRef(null);
   const sessionIdRef = useRef(null);
+  const submittingRef = useRef(false);
 
   useEffect(() => {
     if (messagesRef.current) {
@@ -45,11 +47,12 @@ export default function DigitalTwinChat() {
   const submitMessage = async (event) => {
     event.preventDefault();
     const content = input.trim();
-    if (!content || isLoading) return;
+    if (!content || submittingRef.current) return;
 
+    submittingRef.current = true;
     const userMessage = { id: `${Date.now()}-user`, role: "user", content };
-    const nextMessages = [...messages, userMessage];
-    setMessages(nextMessages);
+    setMessages((current) => [...current, userMessage]);
+    setErrorMessage("");
     setInput("");
     setIsLoading(true);
 
@@ -64,16 +67,11 @@ export default function DigitalTwinChat() {
       sessionIdRef.current = payload.sessionId;
       setMessages((current) => [...current, { id: `${Date.now()}-assistant`, role: "assistant", content: payload.message }]);
     } catch (error) {
-      setMessages((current) => [
-        ...current,
-        {
-          id: `${Date.now()}-error`,
-          role: "assistant",
-          content: error.message || "I could not reach the Digital Twin just now. Please try again.",
-          isError: true,
-        },
-      ]);
+      setMessages((current) => current.filter((message) => message.id !== userMessage.id));
+      setInput(content);
+      setErrorMessage(error.message || "I could not reach the Digital Twin just now. Please try again.");
     } finally {
+      submittingRef.current = false;
       setIsLoading(false);
     }
   };
@@ -99,10 +97,11 @@ export default function DigitalTwinChat() {
         <div className="twin-chat" aria-label="Chat with Peter Falase's Digital Twin">
           <div className="twin-chat-header"><div className="twin-avatar">PF<span>.</span></div><div><strong>Peter&apos;s Digital Twin</strong><span>Career context / live chat</span></div><span className="twin-live"><i />LIVE</span></div>
           <div className="twin-messages" ref={messagesRef} aria-live="polite">
-            {messages.map((message) => <div className={`twin-message ${message.role} ${message.isError ? "error" : ""}`} key={message.id}><span className="message-label">{message.role === "assistant" ? "DIGITAL TWIN" : "YOU"}</span><p>{renderMessageContent(message.content)}</p></div>)}
+            {messages.map((message) => <div className={`twin-message ${message.role}`} key={message.id}><span className="message-label">{message.role === "assistant" ? "DIGITAL TWIN" : "YOU"}</span><p>{renderMessageContent(message.content)}</p></div>)}
             {isLoading && <div className="twin-message assistant"><span className="message-label">DIGITAL TWIN</span><p className="typing"><i /><i /><i /></p></div>}
           </div>
-          <div className="twin-prompts">{prompts.map((prompt) => <button type="button" key={prompt} onClick={() => setInput(prompt)}>{prompt}</button>)}</div>
+          {errorMessage && <p className="twin-error" role="alert">{errorMessage} Your question is back in the box so you can retry or edit it.</p>}
+          <div className="twin-prompts">{prompts.map((prompt) => <button type="button" key={prompt} disabled={isLoading} onClick={() => setInput(prompt)}>{prompt}</button>)}</div>
           <form className="twin-form" onSubmit={submitMessage}><textarea value={input} onChange={(event) => setInput(event.target.value)} onKeyDown={handleKeyDown} placeholder="Ask about Peter&apos;s career..." rows="1" aria-label="Ask the Digital Twin a question" disabled={isLoading} /><button type="submit" aria-label="Send question" disabled={!input.trim() || isLoading}><SendIcon /></button></form>
           <p className="twin-note">AI responses use Peter&apos;s resume. Messages are sent to OpenRouter and its model provider; please avoid sharing personal or confidential information.</p>
         </div>

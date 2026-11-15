@@ -85,6 +85,8 @@ Some protections depend on the hosting service. We can prepare and check the loc
 
 ### Step 5 — Make failed questions easy to retry (C5)
 
+**Progress:** Failed questions return to the input and their temporary message is removed; errors are shown separately from conversation history. Browser verification remains to be done.
+
 **Where:** `app/components/DigitalTwinChat.jsx`.
 
 **What and why:** Keep error messages separate from the conversation sent to the AI and let a visitor retry a failed question or restore its text.
