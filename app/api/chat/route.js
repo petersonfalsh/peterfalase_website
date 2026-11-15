@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { checkLocalRateLimit } from "./rate-limit";
 
 const MODEL = "nvidia/nemotron-3.5-super-vl:free";
 
@@ -40,6 +41,20 @@ export async function POST(request) {
 
     if (!cleanMessages.some((message) => message.role === "user")) {
       return NextResponse.json({ error: "Please ask a question about Peter's career." }, { status: 400 });
+    }
+
+    // A process-local counter cannot protect a deployed, multi-instance service.
+    if (process.env.NODE_ENV !== "development") {
+      console.error("Digital Twin chat is disabled: shared production rate limiting is not configured.");
+      return NextResponse.json({ error: "The Digital Twin is temporarily unavailable. Please try again later." }, { status: 503 });
+    }
+
+    const limit = checkLocalRateLimit();
+    if (!limit.allowed) {
+      return NextResponse.json(
+        { error: "The chat has reached its request limit. Please try again in a minute." },
+        { status: 429, headers: { "Retry-After": String(limit.retryAfter) } },
+      );
     }
 
     const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {

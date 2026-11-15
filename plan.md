@@ -1,4 +1,232 @@
-# Portfolio Hardening and AI Chat Setup Plan
+# Current plan: improve the AI chat and portfolio
+
+**Updated:** 15 November 2026
+**Based on:** Current findings C1–C13 in `review.md`.
+
+## How we will work
+
+We will take one step at a time: explain the intended change, implement it, review the result together, and create a separate commit before moving on. Steps are unchecked until their work and review are complete. The site currently works locally; public deployment is postponed. Never put the OpenRouter key in code, documentation or Git.
+
+Some protections depend on the hosting service. We can prepare and check the local application now, but a local-only solution does not prove the public service is protected. We will decide the hosting-specific parts when a deployment platform is chosen.
+
+### Step 1 — Limit repeated chat requests (C1)
+
+**Progress:** Local development has a shared limit of 10 requests per minute per running server. The endpoint is disabled outside development until shared production protection is configured. Hosting-specific rate limiting, monitoring and deployment checks remain open, so this step is not yet complete.
+
+**Where:** The server-side chat endpoint, and eventually the hosting service.
+
+**What and why:** Add a limit on how often someone can ask the chat a question, plus a clear message when the limit is reached. Consider a shared overall limit and monitoring. This helps keep the service available and protects the OpenRouter account's allowance.
+
+**If skipped:** A person or automated program could repeatedly call the endpoint, exhaust the free allowance, make the chat unavailable to others, or incur costs if account settings or provider pricing change.
+
+**Tasks:**
+
+- [ ] Choose limits that are reasonable for ordinary visitors and explain what happens when they are reached.
+- [ ] Choose a local development approach and a shared, multi-instance protection for the eventual hosting platform; do not describe an in-memory limit as sufficient for a public deployment.
+- [ ] Add a safe response for exceeded limits and an approach to monitor overall usage without exposing the key or private messages.
+- [ ] Check normal requests and requests over the limit. Record any hosting-specific work that remains.
+
+**Suggested commit:** `feat: protect chat against excessive requests`
+
+### Step 2 — Limit the size of incoming requests (C2)
+
+**Where:** `app/api/chat/route.js` and, later, the hosting service.
+
+**What and why:** Set a maximum size for a request before the server reads and processes the whole thing. A request is the message package sent to the chat endpoint.
+
+**If skipped:** Someone could send an extremely large request and use excessive server memory or processing time. Invalid input may also produce a confusing server error.
+
+**Tasks:**
+
+- [ ] Choose a sensible maximum request size and enforce it while reading, even when a size header is missing or incorrect.
+- [ ] Validate the message structure and number of messages; respond clearly to invalid or oversized requests.
+- [ ] Add an appropriate hosting-level limit when the platform is known.
+- [ ] Check normal, malformed and oversized requests.
+
+**Suggested commit:** `fix: limit and validate chat requests`
+
+### Step 3 — Protect the chat's career context (C3)
+
+**Where:** The chat endpoint and conversation handling.
+
+**What and why:** Stop treating earlier messages supplied by the browser as automatically trustworthy. Decide how the server can recognise or safely handle conversation history and keep answers tied to Peter's reviewed career facts.
+
+**If skipped:** A caller could submit invented earlier assistant answers, and the AI might repeat or build on those inventions. Instructions alone cannot guarantee that an AI will always ignore misleading text.
+
+**Tasks:**
+
+- [ ] Choose a suitable conversation design, considering trusted server-side history and its storage requirements, or clearly marked untrusted history if a simpler approach is chosen.
+- [ ] Prevent browser-supplied messages from being treated as authoritative career facts.
+- [ ] Check known facts, unknown facts and attempts to insert invented history; document remaining limitations.
+
+**Suggested commit:** `fix: improve chat conversation trust`
+
+### Step 4 — Handle slow or unavailable AI responses (C4)
+
+**Where:** The server's OpenRouter request and the chat interface.
+
+**What and why:** Stop waiting after a reasonable time and handle provider failures, including responses that are not in the expected format. Show a helpful message without revealing private details.
+
+**If skipped:** Visitors may wait indefinitely, the input can stay disabled, and server resources can remain occupied. Some provider errors may appear as confusing generic failures.
+
+**Tasks:**
+
+- [ ] Set a reasonable timeout and handle cancellation or slow responses.
+- [ ] Handle unavailable, rate-limited, empty and unexpected provider responses safely.
+- [ ] Check that visitors can continue using the chat after an error and that logs do not reveal the key or private conversations.
+
+**Suggested commit:** `fix: handle chat provider timeouts and errors`
+
+### Step 5 — Make failed questions easy to retry (C5)
+
+**Where:** `app/components/DigitalTwinChat.jsx`.
+
+**What and why:** Keep error messages separate from the conversation sent to the AI and let a visitor retry a failed question or restore its text.
+
+**If skipped:** Visitors may need to retype questions, and the AI may receive an error message as if it were a previous assistant answer.
+
+**Tasks:**
+
+- [ ] Decide how failed questions appear and how visitors retry them.
+- [ ] Exclude interface error messages from AI conversation history.
+- [ ] Check that retrying does not accidentally duplicate a question or mix failed and successful responses.
+
+**Suggested commit:** `fix: improve chat retry and error history`
+
+### Step 6 — Make question length limits clear (C6)
+
+**Where:** The chat input and server validation.
+
+**What and why:** Tell visitors the maximum question length and reject questions that are too long instead of silently cutting them off. Keep the server limit even if the browser also enforces it.
+
+**If skipped:** A visitor could see their whole question on screen while the AI receives only part of it, resulting in a misleading answer.
+
+**Tasks:**
+
+- [ ] Agree on a suitable length and show or explain it in the interface.
+- [ ] Apply matching checks in the browser and on the server.
+- [ ] Check short, maximum-length and too-long questions.
+
+**Suggested commit:** `fix: make chat message limits clear`
+
+### Step 7 — Restore quality checks (C7)
+
+**Where:** `package.json` and project checking tools.
+
+**What and why:** Replace the outdated lint command and establish useful repeatable checks. Linting looks for common code problems; automated checks help catch changes that accidentally break existing behaviour.
+
+**If skipped:** Problems in request handling, mobile navigation or chat recovery may go unnoticed until a visitor encounters them.
+
+**Tasks:**
+
+- [ ] Configure a lint command supported by the installed project versions.
+- [ ] Add focused checks for validation, limits, provider failures and chat recovery, using a mock provider where appropriate.
+- [ ] Add a small browser check for important navigation and chat behaviour.
+- [ ] Document the commands and run the checks appropriate to the work.
+
+**Suggested commit:** `chore: restore project quality checks`
+
+### Step 8 — Show honest chat availability (C8)
+
+**Where:** AI Twin labels and status messages.
+
+**What and why:** Replace the permanent “LIVE” and “ONLINE” claims with neutral wording, or show status only when it is actually checked.
+
+**If skipped:** Visitors may believe the AI service is available when its key, provider or free allowance is not working.
+
+**Tasks:**
+
+- [ ] Choose clear wording or an actual availability approach.
+- [ ] Check loading, unavailable and rate-limited states.
+
+**Suggested commit:** `fix: clarify AI chat availability`
+
+### Step 9 — Keep career facts consistent (C9)
+
+**Where:** The AI profile, portfolio page and public resume.
+
+**What and why:** Organise the reviewed career information so changes can be kept consistent across the page and chat, and document how the PDF is updated.
+
+**If skipped:** The site, resume and AI can give different or outdated details about Peter's work.
+
+**Tasks:**
+
+- [ ] Identify a practical shared source for facts used in the page and AI prompt, where suitable.
+- [ ] Review facts against the resume and decide how the PDF will be kept current.
+- [ ] Check known facts and missing information after updates.
+
+**Suggested commit:** `refactor: organise shared career information`
+
+### Step 10 — Review provider privacy and availability (C10)
+
+**Where:** OpenRouter, the selected model provider and the chat's visitor notice.
+
+**What and why:** Check current provider terms, how messages are handled, free-model limits and what happens during outages. Decide what information is appropriate to send.
+
+**If skipped:** Visitors may misunderstand where their messages go, and the service could become unavailable or operate under terms you did not expect.
+
+**Tasks:**
+
+- [ ] Review current terms for the exact selected model and provider before public launch.
+- [ ] Decide which profile facts can be sent and keep the visitor notice clear.
+- [ ] Record an approach for provider outages and allowance limits.
+
+**Suggested commit, if files change:** `docs: clarify AI provider privacy and availability`
+
+### Step 11 — Improve chat accessibility (C11)
+
+**Where:** Chat styling, loading status and messages.
+
+**What and why:** Ensure bold text remains readable and loading and errors are communicated clearly, including for keyboard and screen-reader users.
+
+**If skipped:** Some visitors may be unable to read their message or understand whether the chat is working.
+
+**Tasks:**
+
+- [ ] Fix bold text contrast inside user messages.
+- [ ] Provide clear loading and error announcements.
+- [ ] Review keyboard focus, zoom, reduced motion and screen-reader behaviour in a browser.
+
+**Suggested commit:** `fix: improve chat accessibility`
+
+### Step 12 — Connect cards when real destinations exist (C12)
+
+**Where:** Capabilities and “Proof is in the build” cards.
+
+**What and why:** Keep the arrows and hover effects you preferred, and add real, keyboard-accessible links when there are pages or projects to link to.
+
+**If skipped:** Visitors may try to click the cards and find that nothing happens.
+
+**Tasks:**
+
+- [ ] Keep the portfolio work deferred until real project details and destinations are ready.
+- [ ] Add meaningful links only where real destinations exist, and check mouse, keyboard and phone use.
+
+**Suggested commit, when ready:** `feat: link portfolio cards to projects`
+
+### Step 13 — Prepare deployment details (C13)
+
+**Where:** Provider attribution, website metadata and hosting configuration.
+
+**What and why:** Replace the local-only provider attribution with the actual site details when the public address is known, and add useful information for search and social previews.
+
+**If skipped:** Provider attribution may point to localhost, and shared links may lack accurate previews.
+
+**Tasks:**
+
+- [ ] Choose a hosting platform and public address when you are ready to deploy.
+- [ ] Configure the provider attribution and secret key safely for that environment.
+- [ ] Add accurate site and social metadata, then check the deployed site and chat.
+
+**Suggested commit, when ready:** `chore: prepare deployment metadata`
+
+## Previous plan — historical reference
+
+The plan below is preserved from an earlier review. Some of its findings and proposed tasks may already be complete or may no longer match the current application. Use the current plan above as the working agenda, and check the current code before using historical instructions.
+
+---
+
+# Previous plan: Portfolio Hardening and AI Chat Setup
 
 > **For implementation:** Work through the phases in order. Each task has a checkable result. Do not commit secrets or generated output.
 
