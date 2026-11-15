@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { checkLocalRateLimit } from "./rate-limit";
 import { ChatRequestError, readChatMessage } from "./request-validation";
 import { beginConversation, cancelConversation, finishConversation } from "./conversation-store";
+import { ProviderError, requestProvider } from "./provider";
 
 const MODEL = "nvidia/nemotron-3.5-super-vl:free";
 
@@ -52,34 +53,12 @@ export async function POST(request) {
 
     reservation = beginConversation(sessionId);
 
-    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-        "HTTP-Referer": "http://localhost:3000",
-        "X-Title": "Peter Falase Digital Twin",
-      },
-      body: JSON.stringify({
-        model: MODEL,
-        messages: [{ role: "system", content: SYSTEM_PROMPT }, ...reservation.session.messages, { role: "user", content: userMessage }],
-        temperature: 0.45,
-        max_tokens: 500,
-        reasoning: { enabled: false },
-      }),
-      cache: "no-store",
+    const message = await requestProvider({
+      apiKey,
+      model: MODEL,
+      messages: [{ role: "system", content: SYSTEM_PROMPT }, ...reservation.session.messages, { role: "user", content: userMessage }],
+      signal: request.signal,
     });
-
-    const payload = await response.json();
-    if (!response.ok) {
-      console.error("OpenRouter request failed with status", response.status);
-      return NextResponse.json({ error: "The Digital Twin is temporarily unavailable. Please try again later." }, { status: response.status === 429 ? 429 : 502 });
-    }
-
-    const message = payload?.choices?.[0]?.message?.content?.trim();
-    if (!message) {
-      return NextResponse.json({ error: "The Digital Twin returned an empty response." }, { status: 502 });
-    }
 
     finishConversation(reservation, userMessage, message);
     const activeSessionId = reservation.id;
@@ -89,7 +68,11 @@ export async function POST(request) {
     if (error instanceof ChatRequestError) {
       return NextResponse.json({ error: error.message }, { status: error.status });
     }
-    console.error("Digital Twin chat error:", error);
+    if (error instanceof ProviderError) {
+      console.error("Digital Twin provider request failed:", error.reason);
+      return NextResponse.json({ error: error.message }, { status: error.status });
+    }
+    console.error("Digital Twin chat encountered an unexpected error.");
     return NextResponse.json({ error: "The Digital Twin is temporarily unavailable. Please try again." }, { status: 500 });
   } finally {
     if (reservation) cancelConversation(reservation);

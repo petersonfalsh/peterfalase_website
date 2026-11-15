@@ -67,6 +67,8 @@ Some protections depend on the hosting service. We can prepare and check the loc
 
 ### Step 4 — Handle slow or unavailable AI responses (C4)
 
+**Progress:** Provider requests have a 30-second timeout and handle cancellation, rate limits, connection problems, invalid responses and empty answers. Full browser verification remains to be done.
+
 **Where:** The server's OpenRouter request and the chat interface.
 
 **What and why:** Stop waiting after a reasonable time and handle provider failures, including responses that are not in the expected format. Show a helpful message without revealing private details.
