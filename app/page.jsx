@@ -1,6 +1,7 @@
 "use client";
 
 import DigitalTwinChat from "./components/DigitalTwinChat";
+import { careerTimeline as timeline } from "./career";
 
 const ArrowUpRight = ({ size = 18 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -15,44 +16,6 @@ const ArrowDown = () => (
 );
 
 const DotGrid = () => <span className="dot-grid" aria-hidden="true" />;
-
-const timeline = [
-  {
-    year: "2024 — now",
-    role: "IT & Digital Operations Lead",
-    company: "Monoliza Sport & Recreational Center",
-    tag: "OPERATIONS / SYSTEMS",
-    body: "Keeping workplace technology dependable while turning booking, membership, invoicing and tournament administration into clearer, repeatable digital workflows.",
-  },
-  {
-    year: "2024 — now",
-    role: "IT & Project Coordination Officer",
-    company: "Threemplus Integrated Enterprises Ltd",
-    tag: "PROJECTS / DELIVERY",
-    body: "Bringing structure to construction and infrastructure work through document control, reporting systems, equipment tracking and cross-team coordination.",
-  },
-  {
-    year: "2021 — 2023",
-    role: "Web Developer / Project Lead",
-    company: "Freelance & Contract Roles",
-    tag: "BUILD / SHIP",
-    body: "Built responsive websites, web applications, dashboards and database-backed features, taking small technical projects from scope to delivery.",
-  },
-  {
-    year: "2018 — 2020",
-    role: "Administrative Coordinator / Supervisor",
-    company: "Network Energy Development Company",
-    tag: "PROCESS / PEOPLE",
-    body: "Supervised day-to-day operations, staff allocation, invoicing, documentation and recurring reporting with an eye for consistent follow-through.",
-  },
-  {
-    year: "2017",
-    role: "Utility & Technical Operations Officer",
-    company: "Green Acres Boarding School",
-    tag: "INFRASTRUCTURE",
-    body: "Supported generator, solar and electrical infrastructure operations through maintenance scheduling, repair coordination and timely escalation.",
-  },
-];
 
 const capabilityCards = [
   {

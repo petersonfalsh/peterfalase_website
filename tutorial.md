@@ -51,6 +51,7 @@ peterfalase_website/
 ├── app/
 │   ├── api/chat/route.js         # Server-side chat endpoint
 │   ├── components/DigitalTwinChat.jsx  # Chat box and its behaviour
+│   ├── career.js                 # Shared career facts
 │   ├── globals.css               # Visual styles for the site
 │   ├── layout.js                 # Outer page layout and metadata
 │   └── page.jsx                  # Main portfolio page
@@ -73,11 +74,13 @@ peterfalase_website/
 
 ### The `app` folder
 
-`app/page.jsx` builds the main page. It contains the header, hero, scrolling strip, About section, career journey, capabilities, portfolio and contact section. It also places the separate chat component on the page. The `timeline` list near the top contains career roles. The `capabilityCards` list contains the capabilities cards. When a visitor taps a section link, the browser goes to a matching section ID, such as `#journey`.
+`app/page.jsx` builds the main page. It contains the header, hero, scrolling strip, About section, career journey, capabilities, portfolio and contact section. It imports career roles from `app/career.js` and places the separate chat component on the page. The `capabilityCards` list contains the capabilities cards. When a visitor taps a section link, the browser goes to a matching section ID, such as `#journey`.
 
 `app/components/DigitalTwinChat.jsx` builds the chat box visitors see. It holds the welcome message and suggested questions, remembers the messages and input while the page is open, sends questions to `/api/chat`, shows answers or errors, and scrolls to the newest message. Enter sends a question; Shift+Enter adds a new line. This file does **not** contain the API key.
 
-`app/api/chat/route.js` handles the chat request on the server. It chooses the AI model, contains instructions and a written profile based on the resume, reads the private key from the server's environment, and contacts OpenRouter. This is the right place to update the chat's career facts or model selection. Its address in the website is `/api/chat`.
+`app/api/chat/route.js` handles the chat request on the server. It chooses the AI model, combines its instructions with the profile from `app/career.js`, reads the private key from the server's environment, and contacts OpenRouter. Its address in the website is `/api/chat`.
+
+`app/career.js` holds the career timeline and other profile facts. The page and the chat both use its job titles, employers and dates. The page uses each role's `body` for its short description; the chat also uses `resumeDetails` for more detail. Review both descriptions when changing a role.
 
 `app/globals.css` is the site's visual rule book. It controls colours, text sizes, section alignment, cards, the mobile menu, timeline and chat. Rules inside `@media` apply to particular screen sizes or preferences. For example, the smaller-screen rules change the layout for phones. Reduced-motion rules reduce some movement for people who request it.
 
@@ -87,7 +90,7 @@ peterfalase_website/
 
 `public/` holds files the website can serve directly to visitors. The “View resume” button opens the PDF inside this folder. Since visitors can open it, check the PDF for information you are comfortable sharing publicly.
 
-The root folder also contains a copy of the resume. At the last comparison it was identical to the public copy. The website link uses the `public/` copy. If you update a resume, make sure the public copy and the career facts in the chat route are updated as needed; updating the PDF alone does **not** update the AI's written profile.
+The root folder also contains a copy of the resume. At the last comparison it was identical to the public copy. The website link uses the `public/` copy. If you update a resume, review the public copy and the facts in `app/career.js`; updating the PDF alone does **not** update the website or AI profile.
 
 ### Settings and package files
 
@@ -206,7 +209,7 @@ The visitor sees the answer
 
 The route accepts one new question of up to 4,000 characters and keeps up to 12 earlier messages on the local server. It rejects requests larger than 256 KB. A random session ID connects a browser to its conversation; keep that ID private because someone with it could continue the conversation. Local sessions expire after 30 minutes of inactivity or when the server restarts. The development server allows 10 requests per minute in total, and the chat is disabled outside development until shared production protections are configured. It uses `nvidia/nemotron-3.5-super-vl:free`, asks for at most 500 output tokens, and requests reasoning be disabled. A token is a small piece of text; it is not exactly the same as a word.
 
-The server holds a **written summary** of the resume in `SYSTEM_PROMPT`. It does not read the PDF for every question. The instructions tell the model to use the profile and say when an answer is missing. AI can still make mistakes or be influenced by questions; these instructions are not a guarantee. Check answers against the resume, and do not claim the chat can know facts that are not provided.
+The server builds a **written summary** from `app/career.js` and adds it to `SYSTEM_PROMPT`. It does not read the PDF for every question. The instructions tell the model to use the profile and say when an answer is missing. AI can still make mistakes or be influenced by questions; these instructions are not a guarantee. Check answers against the resume, and do not claim the chat can know facts that are not provided.
 
 The key is used by the server to authenticate with OpenRouter and is not deliberately sent to the browser. The messages and the career profile are sent to OpenRouter and its model provider. The chat asks visitors not to share personal or confidential information. The free model may have usage limits, be unavailable, or have provider data-handling terms that should be reviewed before deployment.
 
@@ -247,7 +250,7 @@ This creates generated output in `.next/`. If the build succeeds, you can start 
 
 ### Change a career role
 
-Open `app/page.jsx`, find `const timeline`, and edit the correct role, company, date or description. Save and check the Career Journey section. If the facts should also change the AI's answers, update the written profile in `app/api/chat/route.js` and the resume as appropriate. These are separate copies; they do not update each other automatically.
+Open `app/career.js` and find `careerTimeline`. Edit the correct role, company or date once for both the page and AI. Review both `body` (the page's short description) and `resumeDetails` (the AI's fuller description). Save and check the Career Journey and AI answers. The resume PDF does not update automatically; update the public PDF separately when needed.
 
 ### Change a capability or page text
 
@@ -263,7 +266,7 @@ Open `app/components/DigitalTwinChat.jsx` and find the `prompts` list. Edit a qu
 
 ### Update the AI's career knowledge
 
-Open `app/api/chat/route.js` and find `PROFILE FACTS` inside `SYSTEM_PROMPT`. Add only facts Peter is willing to make public and send to the AI provider. Make sure they match the current resume. Do not add a secret, private customer data, or claims you cannot support. Test both a known fact and a question the profile cannot answer.
+Open `app/career.js` and review `careerFacts` and `careerTimeline`. Add only facts Peter is willing to make public and send to the AI provider. Make sure they match the current resume. Do not add a secret, private customer data, or claims you cannot support. Test both a known fact and a question the profile cannot answer.
 
 ### Add real portfolio work later
 
@@ -406,7 +409,7 @@ The quotation marks keep the message together as one piece of text. The commit i
 
 **A certificate error appears on this Windows computer.** Node may not trust a certificate used by the connection. The `--use-system-ca` setting in section 5 worked for a local endpoint check here. A certificate error can have different causes; find out why a certificate is present and trusted. Never solve this by turning off certificate validation.
 
-**The chat gives a wrong answer.** Compare the written profile in `route.js` with the resume and check the question. AI can still make mistakes even with instructions. Correct outdated facts and test again.
+**The chat gives a wrong answer.** Compare the written profile in `app/career.js` with the resume and check the question. AI can still make mistakes even with instructions. Correct outdated facts and test again.
 
 **A Git status list shows generated files.** The project ignores `.next/`, but ignore rules alone do not remove files already tracked by Git. Follow the repository cleanup instructions in `do_not_commit.md`; review staged changes before committing.
 

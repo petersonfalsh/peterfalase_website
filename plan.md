@@ -159,6 +159,8 @@ Some protections depend on the hosting service. We can prepare and check the loc
 
 ### Step 9 — Keep career facts consistent (C9)
 
+**Progress:** Job titles, employers and dates now come from `app/career.js` for both the timeline and AI profile. The PDF, page descriptions and AI descriptions still need a deliberate review when facts change; unknown-fact answers require a live AI check.
+
 **Where:** The AI profile, portfolio page and public resume.
 
 **What and why:** Organise the reviewed career information so changes can be kept consistent across the page and chat, and document how the PDF is updated.

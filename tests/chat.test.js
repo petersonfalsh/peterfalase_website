@@ -4,9 +4,18 @@ import { readChatMessage } from "../app/api/chat/request-validation.js";
 import { beginConversation, cancelConversation, finishConversation } from "../app/api/chat/conversation-store.js";
 import { requestProvider } from "../app/api/chat/provider.js";
 import { checkLocalRateLimit } from "../app/api/chat/rate-limit.js";
+import { buildCareerProfile, careerTimeline } from "../app/career.js";
 
 const request = (body) => new Request("http://localhost/api/chat", { method: "POST", body });
 const json = (value) => JSON.stringify(value);
+
+test("AI career profile includes the same roles, employers and dates as the page", () => {
+  const profile = buildCareerProfile();
+  for (const { year, role, company } of careerTimeline) {
+    assert.ok(profile.includes(`${year}: ${role} at ${company}.`));
+  }
+  assert.match(profile, /Ladoke Akintola University of Technology/);
+});
 
 test("local rate limit blocks the eleventh request and resets", () => {
   for (let i = 0; i < 10; i += 1) assert.equal(checkLocalRateLimit(1000).allowed, true);
