@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { checkLocalRateLimit } from "./rate-limit";
+import { ChatRequestError, readChatMessages } from "./request-validation";
 
 const MODEL = "nvidia/nemotron-3.5-super-vl:free";
 
@@ -31,17 +32,7 @@ export async function POST(request) {
       return NextResponse.json({ error: "OPENROUTER_API_KEY is not configured." }, { status: 500 });
     }
 
-    const body = await request.json();
-    const messages = Array.isArray(body?.messages) ? body.messages : [];
-    const cleanMessages = messages
-      .filter((message) => ["user", "assistant"].includes(message?.role) && typeof message?.content === "string")
-      .map((message) => ({ role: message.role, content: message.content.trim().slice(0, 4000) }))
-      .filter((message) => message.content.length > 0)
-      .slice(-12);
-
-    if (!cleanMessages.some((message) => message.role === "user")) {
-      return NextResponse.json({ error: "Please ask a question about Peter's career." }, { status: 400 });
-    }
+    const cleanMessages = await readChatMessages(request);
 
     // A process-local counter cannot protect a deployed, multi-instance service.
     if (process.env.NODE_ENV !== "development") {
@@ -88,6 +79,9 @@ export async function POST(request) {
 
     return NextResponse.json({ message, model: MODEL });
   } catch (error) {
+    if (error instanceof ChatRequestError) {
+      return NextResponse.json({ error: error.message }, { status: error.status });
+    }
     console.error("Digital Twin chat error:", error);
     return NextResponse.json({ error: "The Digital Twin is temporarily unavailable. Please try again." }, { status: 500 });
   }

@@ -56,7 +56,7 @@ export default function DigitalTwinChat() {
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: nextMessages.map(({ role, content: text }) => ({ role, content: text })) }),
+        body: JSON.stringify({ messages: nextMessages.slice(-12).map(({ role, content: text }) => ({ role, content: text })) }),
       });
       const payload = await response.json();
       if (!response.ok) throw new Error(payload?.error || "Unable to reach the Digital Twin.");

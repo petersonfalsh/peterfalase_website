@@ -30,6 +30,8 @@ Some protections depend on the hosting service. We can prepare and check the loc
 
 ### Step 2 — Limit the size of incoming requests (C2)
 
+**Progress:** The application checks a 256 KB limit while reading requests and validates up to 12 messages. A hosting-level limit remains to be configured when a platform is chosen.
+
 **Where:** `app/api/chat/route.js` and, later, the hosting service.
 
 **What and why:** Set a maximum size for a request before the server reads and processes the whole thing. A request is the message package sent to the chat endpoint.
