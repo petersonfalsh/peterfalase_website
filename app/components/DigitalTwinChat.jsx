@@ -100,7 +100,7 @@ export default function DigitalTwinChat() {
           <div className="twin-chat-header"><div className="twin-avatar">PF<span>.</span></div><div><strong>Peter&apos;s Digital Twin</strong><span>Career questions / AI assistant</span></div></div>
           <div className="twin-messages" ref={messagesRef} aria-live="polite">
             {messages.map((message) => <div className={`twin-message ${message.role}`} key={message.id}><span className="message-label">{message.role === "assistant" ? "DIGITAL TWIN" : "YOU"}</span><p>{renderMessageContent(message.content)}</p></div>)}
-            {isLoading && <div className="twin-message assistant"><span className="message-label">DIGITAL TWIN</span><p className="typing"><i /><i /><i /></p></div>}
+            {isLoading && <div className="twin-message assistant"><span className="message-label">DIGITAL TWIN</span><p className="typing"><span>Thinking</span><i aria-hidden="true" /><i aria-hidden="true" /><i aria-hidden="true" /></p></div>}
           </div>
           {errorMessage && <p className="twin-error" role="alert">{errorMessage} Your question is back in the box so you can retry or edit it.</p>}
           <div className="twin-prompts">{prompts.map((prompt) => <button type="button" key={prompt} disabled={isLoading} onClick={() => setInput(prompt)}>{prompt}</button>)}</div>

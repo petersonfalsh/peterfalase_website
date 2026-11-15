@@ -177,6 +177,15 @@ Some protections depend on the hosting service. We can prepare and check the loc
 
 ### Step 10 — Review provider privacy and availability (C10)
 
+**Research recorded 15 November 2026 — decision required before public launch:**
+
+- The [selected NVIDIA free endpoint](https://openrouter.ai/nvidia/nemotron-3.5-super-vl%3Afree) asks users not to submit personal or confidential information and says usage is logged for security and product improvement. The chat sends Peter's named career profile, including contact details, with every question. A public resume is still personal information. This creates a conflict with the endpoint's stated guidance; the visitor warning alone does not resolve it. Avoid sending real personal information to this endpoint while choosing an appropriate alternative.
+- [OpenRouter's privacy policy](https://openrouter.ai/privacy) says OpenRouter does not use inputs or outputs for model training, but provider practices differ. Do not assume that every provider has the same retention or training policy, or that a provider is zero-retention unless its exact endpoint supports and is configured for it.
+- According to [OpenRouter's free-model information](https://openrouter.ai/collections/free-models), free variants are limited to 20 requests per minute and generally 50 per day; qualifying credit purchases can increase the daily limit. Failed attempts count towards the daily cap. Limits and model availability can change. The local app's 10-per-minute limit is separate and does not protect a multi-instance public deployment.
+- The app currently shows an error on provider failure, rate limit or timeout. Before launch, agree how to monitor availability, inform visitors, and select a fallback only if its privacy terms and price are acceptable. A fallback may have a cost; do not silently switch to a paid model.
+
+**Current direction:** Peter wants to keep the current model and allow questions to be sent to it, and notes that his career profile is already public. The current chat remains available for local use. Public availability does not remove the provider's stated restriction on personal data. Simply removing a name or contact details would not guarantee that a career profile is anonymous. Before public launch, review the provider's current terms and decide how to address its personal-data guidance and unpredictable visitor messages. No provider switch has been made, and the public chat remains disabled outside development.
+
 **Where:** OpenRouter, the selected model provider and the chat's visitor notice.
 
 **What and why:** Check current provider terms, how messages are handled, free-model limits and what happens during outages. Decide what information is appropriate to send.
@@ -192,6 +201,8 @@ Some protections depend on the hosting service. We can prepare and check the loc
 **Suggested commit, if files change:** `docs: clarify AI provider privacy and availability`
 
 ### Step 11 — Improve chat accessibility (C11)
+
+**Progress:** Bold text inherits the message colour, and loading has readable text in the chat's live region. Error announcements remain separate. Real screen-reader, zoom and reduced-motion checks are still needed.
 
 **Where:** Chat styling, loading status and messages.
 

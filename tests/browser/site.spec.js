@@ -28,3 +28,21 @@ test("chat restores a failed question and retries without duplication", async ({
   await expect(page.getByText("Peter works in digital operations.")).toBeVisible();
   await expect(page.getByText("What does Peter do?", { exact: true })).toHaveCount(1);
 });
+
+test("chat shows readable bold text and a clear loading message", async ({ page }) => {
+  let respond;
+  const pending = new Promise((resolve) => { respond = resolve; });
+  await page.route("**/api/chat", async (route) => {
+    await pending;
+    await route.fulfill({ status: 200, json: { message: "Answer", sessionId: "a".repeat(64) } });
+  });
+  await page.goto("/");
+  await page.getByRole("textbox", { name: "Ask the Digital Twin a question" }).fill("**Hello**");
+  await page.getByRole("button", { name: "Send question" }).click();
+  await expect(page.getByText("Thinking", { exact: true })).toBeVisible();
+  const text = page.locator(".twin-message.user p");
+  const colours = await text.evaluate((element) => [getComputedStyle(element).color, getComputedStyle(element.querySelector("strong")).color]);
+  expect(colours[1]).toBe(colours[0]);
+  respond();
+  await expect(page.getByText("Answer", { exact: true })).toBeVisible();
+});
