@@ -18,6 +18,7 @@ test("chat restores a failed question and retries without duplication", async ({
       : { status: 200, json: { message: "Peter works in digital operations.", sessionId: "a".repeat(64) } });
   });
   await page.goto("/");
+  await expect(page.locator(".twin-chat-header")).toContainText("AI assistant");
   const input = page.getByRole("textbox", { name: "Ask the Digital Twin a question" });
   await input.fill("What does Peter do?");
   await page.getByRole("button", { name: "Send question" }).click();

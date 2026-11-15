@@ -142,6 +142,8 @@ Some protections depend on the hosting service. We can prepare and check the loc
 
 ### Step 8 — Show honest chat availability (C8)
 
+**Progress:** Replaced the AI Twin's static online and live labels with neutral assistant wording. The interface continues to show a message when requests fail; it does not claim to perform a live availability check.
+
 **Where:** AI Twin labels and status messages.
 
 **What and why:** Replace the permanent “LIVE” and “ONLINE” claims with neutral wording, or show status only when it is actually checked.

@@ -90,14 +90,14 @@ export default function DigitalTwinChat() {
       <div className="section-kicker light"><span>04</span><span>ASK THE DIGITAL TWIN</span></div>
       <div className="twin-layout">
         <div className="twin-intro">
-          <p className="twin-status"><span /> ONLINE / GROUNDED IN PROFILE</p>
+          <p className="twin-status">AI ASSISTANT / CAREER PROFILE</p>
           <h2>Ask the<br /><span>operator.</span></h2>
           <p className="twin-description">Ask this AI assistant about Peter&apos;s experience, strengths and current work to see where he can add value.</p>
           <div className="twin-meta"><div><span>MODEL</span><strong>NVIDIA / NEMOTRON</strong></div><div><span>KNOWLEDGE BASE</span><strong>RESUME / 2026</strong></div></div>
         </div>
 
         <div className="twin-chat" aria-label="Chat with Peter Falase's Digital Twin">
-          <div className="twin-chat-header"><div className="twin-avatar">PF<span>.</span></div><div><strong>Peter&apos;s Digital Twin</strong><span>Career context / live chat</span></div><span className="twin-live"><i />LIVE</span></div>
+          <div className="twin-chat-header"><div className="twin-avatar">PF<span>.</span></div><div><strong>Peter&apos;s Digital Twin</strong><span>Career questions / AI assistant</span></div></div>
           <div className="twin-messages" ref={messagesRef} aria-live="polite">
             {messages.map((message) => <div className={`twin-message ${message.role}`} key={message.id}><span className="message-label">{message.role === "assistant" ? "DIGITAL TWIN" : "YOU"}</span><p>{renderMessageContent(message.content)}</p></div>)}
             {isLoading && <div className="twin-message assistant"><span className="message-label">DIGITAL TWIN</span><p className="typing"><i /><i /><i /></p></div>}

@@ -139,7 +139,6 @@ h2 span { color: var(--orange); }
 .twin-layout { display: grid; grid-template-columns: .82fr 1.18fr; gap: 9%; align-items: center; position: relative; z-index: 1; }
 .twin-intro { max-width: 470px; }
 .twin-status { display: flex; align-items: center; gap: 9px; color: var(--acid); font-size: 9px; letter-spacing: .16em; text-transform: uppercase; margin: 0 0 30px; }
-.twin-status span { width: 7px; height: 7px; display: inline-block; border-radius: 50%; background: var(--acid); box-shadow: 0 0 12px rgba(173,207,104,.7); }
 .twin-intro h2 { font-size: clamp(55px, 6vw, 84px); }
 .twin-intro h2 span { color: var(--acid); }
 .twin-description { max-width: 390px; margin: 33px 0 42px; color: rgba(241,240,235,.62); font-size: 15px; line-height: 1.55; }
@@ -155,8 +154,6 @@ h2 span { color: var(--orange); }
 .twin-chat-header > div:nth-child(2) { display: flex; flex-direction: column; gap: 5px; }
 .twin-chat-header strong { font-size: 14px; letter-spacing: -.02em; }
 .twin-chat-header div:nth-child(2) span { color: #757872; font-size: 9px; letter-spacing: .1em; text-transform: uppercase; }
-.twin-live { display: inline-flex; align-items: center; gap: 5px; color: #69705c; font-size: 9px; letter-spacing: .12em; margin-left: auto; }
-.twin-live i { width: 6px; height: 6px; display: inline-block; border-radius: 50%; background: var(--acid-ink); }
 .twin-messages { height: 326px; padding: 21px 19px; display: flex; flex-direction: column; gap: 17px; overflow-y: auto; scroll-behavior: smooth; }
 .twin-message { max-width: 82%; }
 .twin-message.user { align-self: flex-end; text-align: right; }
@@ -327,7 +324,7 @@ h2 span { color: var(--orange); }
 .about-foot, .stat > span, .timeline-meta, .timeline-number,
 .timeline-content .company, .card-number, .twin-status,
 .twin-meta span, .twin-meta strong, .twin-chat-header div:nth-child(2) span,
-.twin-live, .message-label, .twin-prompts button, .twin-note,
+.message-label, .twin-prompts button, .twin-note,
 .visual-label, .project-copy > span, .contact-details, .site-footer,
 .portrait-top, .portrait-bottom, .button { font-size: 12px; }
 .capability-card p, .timeline-content > p:last-child, .project-copy p,
